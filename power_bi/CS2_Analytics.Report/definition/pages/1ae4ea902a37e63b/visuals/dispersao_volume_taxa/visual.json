@@ -1,0 +1,193 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.10.0/schema.json",
+  "name": "dispersao_volume_taxa",
+  "position": {
+    "x": 640,
+    "y": 130,
+    "z": 0,
+    "height": 280,
+    "width": 620,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "scatterChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Equipes"
+                    }
+                  },
+                  "Property": "Equipe"
+                }
+              },
+              "queryRef": "Equipes.Equipe",
+              "nativeQueryRef": "Equipe",
+              "active": true
+            }
+          ]
+        },
+        "Size": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Medidas"
+                    }
+                  },
+                  "Property": "Partidas representadas"
+                }
+              },
+              "queryRef": "Medidas.Partidas representadas",
+              "nativeQueryRef": "Partidas representadas"
+            }
+          ]
+        },
+        "X": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Medidas"
+                    }
+                  },
+                  "Property": "Partidas representadas"
+                }
+              },
+              "queryRef": "Medidas.Partidas representadas",
+              "nativeQueryRef": "Partidas representadas",
+              "active": true
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Medidas"
+                    }
+                  },
+                  "Property": "Taxa de vitoria (min 50)"
+                }
+              },
+              "queryRef": "Medidas.Taxa de vitoria (min 50)",
+              "nativeQueryRef": "Taxa de vitoria (min 50)"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Medidas"
+                  }
+                },
+                "Property": "Partidas representadas"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Volume x taxa de vitória'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "f7c55baba3b900247696",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Medidas"
+              }
+            },
+            "Property": "Partidas representadas"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "1b6a3d577def6827552b",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Medidas"
+              }
+            },
+            "Property": "Taxa de vitoria (min 50)"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "7c339729ad819e862955",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Equipes"
+              }
+            },
+            "Property": "Equipe"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
+  }
+}

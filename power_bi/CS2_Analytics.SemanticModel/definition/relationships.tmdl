@@ -1,0 +1,32 @@
+relationship Partidas_Data
+	fromColumn: Partidas.'Data ID'
+	toColumn: Calendario.'Data ID'
+
+relationship PartidasEquipe_Data
+	fromColumn: PartidasEquipe.'Data ID'
+	toColumn: Calendario.'Data ID'
+
+relationship PartidasEquipe_Equipe
+	fromColumn: PartidasEquipe.'Equipe ID'
+	toColumn: Equipes.'Equipe ID'
+
+relationship Modelagem_Data
+	fromColumn: Modelagem.'Data ID'
+	toColumn: Calendario.'Data ID'
+
+relationship Modelagem_Equipe
+	fromColumn: Modelagem.'Equipe ID'
+	toColumn: Equipes.'Equipe ID'
+
+relationship Previsoes_Data
+	fromColumn: Previsoes.'Data ID'
+	toColumn: Calendario.'Data ID'
+
+relationship Previsoes_Equipe
+	fromColumn: Previsoes.'Equipe ID'
+	toColumn: Equipes.'Equipe ID'
+
+relationship AutoDetected_b5407196-ec0a-41ad-bc4b-78560342f2f4
+	isActive: false
+	fromColumn: PartidasEquipe.match_url
+	toColumn: Partidas.match_url

@@ -1,0 +1,40 @@
+table Equipes
+	lineageTag: b2d5fb2f-ed36-4697-9748-d62c26abcf60
+
+	column 'Equipe ID'
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 7dd1d5c9-897d-478b-ab45-52f9b19b20da
+		summarizeBy: none
+		sourceColumn: team_id
+
+	column Chave
+		dataType: string
+		isHidden
+		lineageTag: 575911cb-1698-422a-af83-74620f4ec453
+		summarizeBy: none
+		sourceColumn: team_key
+
+	column Equipe
+		dataType: string
+		lineageTag: c535cf96-de82-4dec-b492-73a32e04887b
+		summarizeBy: none
+		sourceColumn: team_name
+
+	column 'HLTV ID'
+		dataType: int64
+		isHidden
+		lineageTag: 136c43d0-ddb6-4b68-9d1b-b805867711b3
+		summarizeBy: none
+		sourceColumn: hltv_team_id
+
+	partition Equipes = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents(DataRoot & "\dim_team.csv"), [Delimiter=";", Columns=4, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Types = Table.TransformColumnTypes(Headers, {{"team_id", Int64.Type}, {"team_key", type text}, {"team_name", type text}, {"hltv_team_id", Int64.Type}}, "pt-BR")
+				in
+					Types

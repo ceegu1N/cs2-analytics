@@ -1,0 +1,103 @@
+table Partidas
+	lineageTag: 2adb4f58-6086-4806-9a2c-8879d96285a0
+
+	column 'Partida ID'
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 53a87fd2-7ef6-4789-9141-b87750a99fb1
+		summarizeBy: count
+		sourceColumn: match_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data ID'
+		dataType: int64
+		isHidden
+		lineageTag: 8b7fb607-9e04-4cda-bbc5-726792e1df52
+		summarizeBy: none
+		sourceColumn: match_date_key
+
+	column Temporada
+		dataType: string
+		lineageTag: 0a83d2e4-7d24-4f2c-8f65-96c80751cb8a
+		summarizeBy: none
+		sourceColumn: season_label
+
+	column Recorte
+		dataType: string
+		lineageTag: 3dcd312d-410f-4cb1-b365-9d7b41242810
+		summarizeBy: none
+		sourceColumn: season_usage
+
+	column 'Equipe A ID'
+		dataType: int64
+		isHidden
+		lineageTag: 360ea0b7-76a8-40fe-bc04-06006e1ea970
+		summarizeBy: count
+		sourceColumn: team_a_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Equipe B ID'
+		dataType: int64
+		isHidden
+		lineageTag: c6af0a33-3e6a-416a-bf03-387f5c18ca43
+		summarizeBy: count
+		sourceColumn: team_b_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Formato
+		dataType: string
+		lineageTag: 8ad9d65e-2e3e-4731-9552-738a81922f02
+		summarizeBy: none
+		sourceColumn: best_of
+
+	column Ambiente
+		dataType: string
+		lineageTag: f9a70e03-844d-4b88-ad01-961113297182
+		summarizeBy: none
+		sourceColumn: lan_online
+
+	column team_a_score
+		dataType: string
+		lineageTag: e70d3850-5c64-406c-952a-d0b109faed1c
+		summarizeBy: none
+		sourceColumn: team_a_score
+
+		annotation SummarizationSetBy = Automatic
+
+	column team_b_score
+		dataType: string
+		lineageTag: 5750a68c-3db8-4e2b-b318-91d5c045b732
+		summarizeBy: none
+		sourceColumn: team_b_score
+
+		annotation SummarizationSetBy = Automatic
+
+	column team_a_win
+		dataType: string
+		lineageTag: 2918ad06-25cd-40c7-930a-65eb06dcc5d3
+		summarizeBy: none
+		sourceColumn: team_a_win
+
+		annotation SummarizationSetBy = Automatic
+
+	column match_url
+		dataType: string
+		lineageTag: 5b7fdca6-081a-492b-8553-19357e00955e
+		summarizeBy: none
+		sourceColumn: match_url
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Partidas = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents(DataRoot & "\fact_match.csv"), [Delimiter=";", Columns=12, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Types = Table.TransformColumnTypes(Headers, {{"match_id", Int64.Type}, {"match_date_key", Int64.Type}, {"season_label", type text}, {"season_usage", type text}, {"team_a_id", Int64.Type}, {"team_b_id", Int64.Type}, {"best_of", type text}, {"lan_online", type text}}, "pt-BR")
+				in
+					Types

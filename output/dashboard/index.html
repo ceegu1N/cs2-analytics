@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS2 Analytics</title>
+<script>try{var t=localStorage.getItem('cs2-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<style>:root{--s1:#3987e5;--s2:#008300;--s3:#d55181;--s4:#c98500;--surface:#1a1a19;--page:#0d0d0d;--ink:#ffffff;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--baseline:#383835;--border:rgba(255,255,255,0.10);--r1:#184f95;--on-r1:#ffffff;--r2:#2a78d6;--on-r2:#ffffff;--r3:#6da7ec;--on-r3:#ffffff;--r4:#b7d3f6;--on-r4:#0b0b0b;--q1:#184f95;--on-q1:#ffffff;--q2:#256abf;--on-q2:#ffffff;--q3:#3987e5;--on-q3:#ffffff;--q4:#6da7ec;--on-q4:#ffffff;--q5:#b7d3f6;--on-q5:#0b0b0b;--on-s1:#ffffff;--on-s2:#ffffff;--on-s3:#ffffff;--on-s4:#ffffff;color-scheme:dark;}
+:root[data-theme="light"]{--s1:#2a78d6;--s2:#008300;--s3:#e87ba4;--s4:#eda100;--surface:#fcfcfb;--page:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--grid:#e1e0d9;--baseline:#c3c2b7;--border:rgba(11,11,11,0.10);--r1:#86b6ef;--on-r1:#0b0b0b;--r2:#3987e5;--on-r2:#ffffff;--r3:#1c5cab;--on-r3:#ffffff;--r4:#0d366b;--on-r4:#ffffff;--q1:#cde2fb;--on-q1:#0b0b0b;--q2:#9ec5f4;--on-q2:#0b0b0b;--q3:#6da7ec;--on-q3:#ffffff;--q4:#2a78d6;--on-q4:#ffffff;--q5:#184f95;--on-q5:#ffffff;--on-s1:#ffffff;--on-s2:#ffffff;--on-s3:#ffffff;--on-s4:#0b0b0b;color-scheme:light;}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{background:var(--page);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:var(--s1);text-decoration:none}
+a:hover{text-decoration:underline}
+header.top{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:20px;
+  padding:0 clamp(16px,4vw,40px);height:56px;background:color-mix(in srgb,var(--page) 88%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.brand{font-weight:700;font-size:15px;letter-spacing:.04em;white-space:nowrap}
+nav.sections{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1}
+nav.sections a{color:var(--ink2);font-size:13.5px;padding:6px 12px;border-radius:8px;white-space:nowrap}
+nav.sections a:hover{color:var(--ink);text-decoration:none;background:color-mix(in srgb,var(--ink) 6%,transparent)}
+nav.sections a.active{color:var(--ink);background:color-mix(in srgb,var(--s1) 14%,transparent)}
+.top-actions{display:flex;align-items:center;gap:8px}
+#theme-toggle{border:1px solid var(--border);background:var(--surface);color:var(--ink);
+  border-radius:8px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+#theme-toggle:hover{border-color:var(--muted)}
+.gh-link{font-size:13px;color:var(--ink2)}
+.hero{padding:clamp(28px,5vw,52px) clamp(16px,4vw,40px) 8px;max-width:1240px;margin:0 auto}
+.hero h1{font-size:clamp(26px,4vw,36px);font-weight:700;letter-spacing:-.01em}
+.hero p.sub{color:var(--ink2);max-width:820px;margin-top:8px}
+.hero .period{display:inline-block;margin-top:14px;font-size:12.5px;color:var(--ink2);
+  border:1px solid var(--border);border-radius:999px;padding:4px 12px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1240px;
+  margin:20px auto 0;padding:0 clamp(16px,4vw,40px)}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;
+  display:flex;flex-direction:column;gap:2px}
+.kpi-value{font-size:30px;font-weight:600;letter-spacing:-.01em}
+.kpi-label{font-size:13px;color:var(--ink2)}
+.kpi-note{font-size:12px;color:var(--muted)}
+main{max-width:1240px;margin:0 auto;padding:8px clamp(16px,4vw,40px) 48px}
+section.block{padding-top:34px}
+section.block>h2{font-size:20px;font-weight:700;display:flex;align-items:center;gap:10px}
+section.block>h2::before{content:"";width:5px;height:20px;border-radius:3px;background:var(--s1)}
+section.block>p.lead{color:var(--ink2);font-size:13.5px;margin:6px 0 16px;max-width:860px}
+.cards{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:18px 20px 14px;min-width:0}
+.card:hover{border-color:color-mix(in srgb,var(--muted) 55%,var(--border))}
+.span6{grid-column:span 6}.span12{grid-column:span 12}
+.card h3{font-size:15px;font-weight:600}
+.card p.note{font-size:12.5px;color:var(--ink2);margin:3px 0 12px}
+.chart{position:relative}
+.chart svg{display:block;width:100%;height:auto}
+svg text{font-family:system-ui,-apple-system,'Segoe UI',sans-serif}
+svg .grid{stroke:var(--grid);stroke-width:1;fill:none}
+.axis{stroke:var(--baseline);stroke-width:1}
+.refline{stroke:var(--muted);stroke-width:1;stroke-dasharray:5 4;fill:none}
+.tick{font-size:11.5px;fill:var(--muted);font-variant-numeric:tabular-nums}
+.cat{font-size:12px;fill:var(--ink2)}
+.val{font-size:11.5px;font-weight:600;fill:var(--ink2);font-variant-numeric:tabular-nums}
+.anno{font-size:11.5px;fill:var(--ink2)}
+.panel-title{font-size:12.5px;font-weight:600;fill:var(--ink2)}
+.seg-label{font-size:12px;font-weight:600}
+.cell-value{font-size:30px;font-weight:600}
+.cell-sub{font-size:12.5px;opacity:.85}
+.mark{transition:filter .1s}
+.mark:hover,.row-hit:hover+path.mark,.mark:focus-visible{filter:brightness(1.18)}
+.mark:focus-visible,.row-hit:focus-visible{outline:1.5px solid var(--s1);outline-offset:2px}
+.dot{pointer-events:none}
+.xh-line{stroke:var(--muted);stroke-width:1;opacity:0}
+.xh-dot{opacity:0}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin:0 0 10px}
+.key{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink2)}
+.key-rect{width:12px;height:12px;border-radius:3px;display:inline-block}
+.key-line{width:16px;height:3px;border-radius:2px;display:inline-block}
+#tooltip{position:fixed;z-index:60;pointer-events:none;background:var(--surface);
+  border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:12.5px;
+  box-shadow:0 6px 24px rgba(0,0,0,.28);opacity:0;transition:opacity .08s;max-width:280px}
+#tooltip .tt-title{font-weight:600;color:var(--ink);margin-bottom:4px}
+#tooltip .tt-row{display:flex;align-items:center;gap:7px;color:var(--ink2);margin-top:2px}
+#tooltip .tt-key{width:12px;height:3px;border-radius:2px;flex:none}
+#tooltip .tt-val{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.table-view{margin-top:10px;border-top:1px solid var(--border);padding-top:8px}
+.table-view summary{font-size:12.5px;color:var(--ink2);cursor:pointer;user-select:none}
+.table-view summary:hover{color:var(--ink)}
+.table-scroll{overflow-x:auto;max-height:340px;overflow-y:auto;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;color:var(--ink2);font-weight:600;padding:6px 10px;border-bottom:1px solid var(--baseline);
+  position:sticky;top:0;background:var(--surface)}
+td{padding:5px 10px;border-bottom:1px solid var(--grid);color:var(--ink2)}
+td:first-child{color:var(--ink)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.plain-table td,.plain-table th{font-size:13px}
+footer{border-top:1px solid var(--border);margin-top:40px;padding:28px clamp(16px,4vw,40px);
+  color:var(--muted);font-size:12.5px}
+footer .foot-inner{max-width:1240px;margin:0 auto;display:grid;gap:6px}
+@media (max-width:900px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .span6{grid-column:span 12}
+  .brand{font-size:13px}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <span class="brand">CS2 ANALYTICS</span>
+  <nav class="sections">
+    <a href="#visao-geral">Visão geral</a>
+    <a href="#equipes">Equipes</a>
+    <a href="#tempo-contexto">Tempo e contexto</a>
+    <a href="#elo">ELO</a>
+    <a href="#modelo">Modelo</a>
+  </nav>
+  <div class="top-actions">
+    <a class="gh-link" href="https://github.com/ceegu1N/cs2-analytics">GitHub</a>
+    <button id="theme-toggle" type="button">Tema</button>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>CS2 Analytics</h1>
+  <p class="sub">Pipeline reproduzível de análise de partidas profissionais de Counter-Strike 2:
+  bases consolidadas viram um banco SQLite, nove consultas SQL respondem as perguntas e este painel
+  apresenta os resultados. O modelo preditivo permanece congelado — nada aqui o retreina.</p>
+  <span class="period">Período operacional: 2023-09-27 a 2026-03-22</span>
+</div>
+<div class="kpis"><div class="kpi"><span class="kpi-value">14.028</span><span class="kpi-label">Partidas únicas</span><span class="kpi-note">uma linha por partida</span></div><div class="kpi"><span class="kpi-value">20.527</span><span class="kpi-label">Perspectivas de equipe</span><span class="kpi-note">duas por partida na fonte</span></div><div class="kpi"><span class="kpi-value">2.840</span><span class="kpi-label">Recorte de modelagem</span><span class="kpi-note">38 atributos pré-jogo</span></div><div class="kpi"><span class="kpi-value">97</span><span class="kpi-label">Equipes representadas</span><span class="kpi-note">mín. de 50 partidas: 95</span></div></div>
+
+<main>
+<section class="block" id="visao-geral">
+  <h2>Visão geral</h2>
+  <p class="lead">Contagens globais usam uma linha por partida; perspectivas de equipe são analisadas separadamente.</p>
+  <div class="cards">
+    <figure class="card span12"><figcaption><h3>Volume mensal de partidas únicas</h3><p class="note">Passe o mouse sobre o gráfico para ler o total de cada mês.</p></figcaption><div class="chart" data-xh-chart>
+<svg viewBox="0 0 1120 300" role="img" aria-label="Volume mensal de partidas únicas de 2023-09 a 2026-03">
+<line x1="56" x2="1100" y1="264.0" y2="264.0" class="grid"/><text x="48" y="268.0" class="tick" text-anchor="end">0</text><line x1="56" x2="1100" y1="202.0" y2="202.0" class="grid"/><text x="48" y="206.0" class="tick" text-anchor="end">200</text><line x1="56" x2="1100" y1="140.0" y2="140.0" class="grid"/><text x="48" y="144.0" class="tick" text-anchor="end">400</text><line x1="56" x2="1100" y1="78.0" y2="78.0" class="grid"/><text x="48" y="82.0" class="tick" text-anchor="end">600</text><line x1="56" x2="1100" y1="16.0" y2="16.0" class="grid"/><text x="48" y="20.0" class="tick" text-anchor="end">800</text>
+<path d="M56.0,254.1 L90.8,118.0 L125.6,123.0 L160.4,198.0 L195.2,125.1 L230.0,138.4 L264.8,134.4 L299.6,76.1 L334.4,75.5 L369.2,127.6 L404.0,115.5 L438.8,43.3 L473.6,70.9 L508.4,114.0 L543.2,152.7 L578.0,190.5 L612.8,163.9 L647.6,92.3 L682.4,48.5 L717.2,100.3 L752.0,96.3 L786.8,161.1 L821.6,162.3 L856.4,92.3 L891.2,78.3 L926.0,91.0 L960.8,92.3 L995.6,192.4 L1030.4,157.0 L1065.2,103.7 L1100.0,146.5 L1100.0,264.0 L56.0,264.0 Z" fill="var(--s1)" opacity="0.1"/>
+<path d="M56.0,254.1 L90.8,118.0 L125.6,123.0 L160.4,198.0 L195.2,125.1 L230.0,138.4 L264.8,134.4 L299.6,76.1 L334.4,75.5 L369.2,127.6 L404.0,115.5 L438.8,43.3 L473.6,70.9 L508.4,114.0 L543.2,152.7 L578.0,190.5 L612.8,163.9 L647.6,92.3 L682.4,48.5 L717.2,100.3 L752.0,96.3 L786.8,161.1 L821.6,162.3 L856.4,92.3 L891.2,78.3 L926.0,91.0 L960.8,92.3 L995.6,192.4 L1030.4,157.0 L1065.2,103.7 L1100.0,146.5" fill="none" stroke="var(--s1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="1100.0" cy="146.5" r="4.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/>
+<text x="56.0" y="288" class="tick" text-anchor="middle">2023-09</text><text x="160.4" y="288" class="tick" text-anchor="middle">2023-12</text><text x="264.8" y="288" class="tick" text-anchor="middle">2024-03</text><text x="369.2" y="288" class="tick" text-anchor="middle">2024-06</text><text x="473.6" y="288" class="tick" text-anchor="middle">2024-09</text><text x="578.0" y="288" class="tick" text-anchor="middle">2024-12</text><text x="682.4" y="288" class="tick" text-anchor="middle">2025-03</text><text x="786.8" y="288" class="tick" text-anchor="middle">2025-06</text><text x="891.2" y="288" class="tick" text-anchor="middle">2025-09</text><text x="995.6" y="288" class="tick" text-anchor="middle">2025-12</text><text x="1100.0" y="288" class="tick" text-anchor="end">2026-03</text>
+<line x1="56" x2="1100" y1="264" y2="264" class="axis"/>
+<line class="xh-line" x1="0" x2="0" y1="16" y2="264"/>
+<g class="xh-dots"><circle class="xh-dot" r="4.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/></g>
+</svg>
+<script type="application/json" data-xh>{"xs": [56.0, 90.8, 125.6, 160.4, 195.2, 230.0, 264.8, 299.6, 334.4, 369.2, 404.0, 438.8, 473.6, 508.4, 543.2, 578.0, 612.8, 647.6, 682.4, 717.2, 752.0, 786.8, 821.6, 856.4, 891.2, 926.0, 960.8, 995.6, 1030.4, 1065.2, 1100.0], "labels": ["2023-09", "2023-10", "2023-11", "2023-12", "2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06", "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03"], "series": [{"name": "Partidas únicas", "color": "var(--s1)", "values": ["32", "471", "455", "213", "448", "405", "418", "606", "608", "440", "479", "712", "623", "484", "359", "237", "323", "554", "695", "528", "541", "332", "328", "554", "599", "558", "554", "231", "345", "517", "379"], "ys": [254.1, 118.0, 123.0, 198.0, 125.1, 138.4, 134.4, 76.1, 75.5, 127.6, 115.5, 43.3, 70.9, 114.0, 152.7, 190.5, 163.9, 92.3, 48.5, 100.3, 96.3, 161.1, 162.3, 92.3, 78.3, 91.0, 92.3, 192.4, 157.0, 103.7, 146.5]}]}</script>
+</div><details class="table-view"><summary>Ver dados em tabela</summary><div class="table-scroll"><table><thead><tr><th scope="col">Mês</th><th scope="col">Partidas únicas</th><th scope="col">LAN</th><th scope="col">Online</th></tr></thead><tbody>
+<tr><td>2023-09</td><td>32</td><td>15</td><td>17</td></tr>
+<tr><td>2023-10</td><td>471</td><td>41</td><td>430</td></tr>
+<tr><td>2023-11</td><td>455</td><td>82</td><td>373</td></tr>
+<tr><td>2023-12</td><td>213</td><td>57</td><td>156</td></tr>
+<tr><td>2024-01</td><td>448</td><td>48</td><td>400</td></tr>
+<tr><td>2024-02</td><td>405</td><td>125</td><td>280</td></tr>
+<tr><td>2024-03</td><td>418</td><td>108</td><td>310</td></tr>
+<tr><td>2024-04</td><td>606</td><td>94</td><td>512</td></tr>
+<tr><td>2024-05</td><td>608</td><td>95</td><td>513</td></tr>
+<tr><td>2024-06</td><td>440</td><td>90</td><td>350</td></tr>
+<tr><td>2024-07</td><td>479</td><td>62</td><td>417</td></tr>
+<tr><td>2024-08</td><td>712</td><td>106</td><td>606</td></tr>
+<tr><td>2024-09</td><td>623</td><td>104</td><td>519</td></tr>
+<tr><td>2024-10</td><td>484</td><td>108</td><td>376</td></tr>
+<tr><td>2024-11</td><td>359</td><td>169</td><td>190</td></tr>
+<tr><td>2024-12</td><td>237</td><td>81</td><td>156</td></tr>
+<tr><td>2025-01</td><td>323</td><td>56</td><td>267</td></tr>
+<tr><td>2025-02</td><td>554</td><td>79</td><td>475</td></tr>
+<tr><td>2025-03</td><td>695</td><td>122</td><td>573</td></tr>
+<tr><td>2025-04</td><td>528</td><td>116</td><td>412</td></tr>
+<tr><td>2025-05</td><td>541</td><td>130</td><td>411</td></tr>
+<tr><td>2025-06</td><td>332</td><td>142</td><td>190</td></tr>
+<tr><td>2025-07</td><td>328</td><td>107</td><td>221</td></tr>
+<tr><td>2025-08</td><td>554</td><td>78</td><td>476</td></tr>
+<tr><td>2025-09</td><td>599</td><td>230</td><td>369</td></tr>
+<tr><td>2025-10</td><td>558</td><td>191</td><td>367</td></tr>
+<tr><td>2025-11</td><td>554</td><td>289</td><td>265</td></tr>
+<tr><td>2025-12</td><td>231</td><td>122</td><td>109</td></tr>
+<tr><td>2026-01</td><td>345</td><td>188</td><td>157</td></tr>
+<tr><td>2026-02</td><td>517</td><td>222</td><td>295</td></tr>
+<tr><td>2026-03</td><td>379</td><td>145</td><td>234</td></tr>
+</tbody></table></div></details></figure>
+    <figure class="card span6"><figcaption><h3>Ambiente das partidas</h3><p class="note">LAN e online descrevem o ambiente da série; não identificam mapas.</p></figcaption><div class="legend"><span class="key"><span class="key-rect" style="background:var(--s1)"></span>LAN</span><span class="key"><span class="key-rect" style="background:var(--s2)"></span>Online</span></div><div class="chart">
+<svg viewBox="0 0 545 96" role="img" aria-label="Ambiente das partidas">
+<rect x="8.0" y="46" width="134.8" height="24" fill="var(--s1)" class="mark" data-tip-title="LAN" data-tip-rows="25,7%::Participação;;3.602::Partidas únicas" data-tip-key="var(--s1)" tabindex="0"/><text x="75.4" y="62.0" text-anchor="middle" class="seg-label" style="fill:var(--on-s1)">LAN · 25,7%</text><path d="M144.8,46.0 L533.0,46.0 Q537.0,46.0 537.0,50.0 L537.0,66.0 Q537.0,70.0 533.0,70.0 L144.8,70.0 Z" fill="var(--s2)" class="mark" data-tip-title="Online" data-tip-rows="74,3%::Participação;;10.426::Partidas únicas" data-tip-key="var(--s2)" tabindex="0"/><text x="340.9" y="62.0" text-anchor="middle" class="seg-label" style="fill:var(--on-s2)">Online · 74,3%</text>
+<text x="8" y="32" class="tick">Partidas únicas: 14.028</text>
+</svg>
+</div><details class="table-view"><summary>Ver dados em tabela</summary><div class="table-scroll"><table><thead><tr><th scope="col">Categoria</th><th scope="col">Partidas únicas</th><th scope="col">Participação</th></tr></thead><tbody>
+<tr><td>LAN</td><td>3.602</td><td>25,7%</td></tr>
+<tr><td>Online</td><td>10.426</td><td>74,3%</td></tr>
+</tbody></table></div></details></figure>
+    <figure class="card span6"><figcaption><h3>Formato das séries</h3><p class="note">Distribuição de melhor-de-1, melhor-de-3 e melhor-de-5 no período.</p></figcaption><div class="legend"><span class="key"><span class="key-rect" style="background:var(--s1)"></span>BO3</span><span class="key"><span class="key-rect" style="background:var(--s2)"></span>BO1</span><span class="key"><span class="key-rect" style="background:var(--s3)"></span>BO5</span></div><div class="chart">
+<svg viewBox="0 0 545 96" role="img" aria-label="Formato das séries">
+<rect x="8.0" y="46" width="414.2" height="24" fill="var(--s1)" class="mark" data-tip-title="BO3" data-tip-rows="78,5%::Participação;;11.010::Partidas únicas" data-tip-key="var(--s1)" tabindex="0"/><text x="215.1" y="62.0" text-anchor="middle" class="seg-label" style="fill:var(--on-s1)">BO3 · 78,5%</text><rect x="424.2" y="46" width="104.8" height="24" fill="var(--s2)" class="mark" data-tip-title="BO1" data-tip-rows="20,2%::Participação;;2.833::Partidas únicas" data-tip-key="var(--s2)" tabindex="0"/><text x="476.6" y="62.0" text-anchor="middle" class="seg-label" style="fill:var(--on-s2)">BO1 · 20,2%</text><path d="M531.0,46.0 L534.0,46.0 Q537.0,46.0 537.0,49.0 L537.0,67.0 Q537.0,70.0 534.0,70.0 L531.0,70.0 Z" fill="var(--s3)" class="mark" data-tip-title="BO5" data-tip-rows="1,3%::Participação;;185::Partidas únicas" data-tip-key="var(--s3)" tabindex="0"/>
+<text x="8" y="32" class="tick">Partidas únicas: 14.028</text>
+</svg>
+</div><details class="table-view"><summary>Ver dados em tabela</summary><div class="table-scroll"><table><thead><tr><th scope="col">Categoria</th><th scope="col">Partidas únicas</th><th scope="col">Participação</th></tr></thead><tbody>
+<tr><td>BO3</td><td>11.010</td><td>78,5%</td></tr>
+<tr><td>BO1</td><td>2.833</td><td>20,2%</td></tr>
+<tr><td>BO5</td><td>185</td><td>1,3%</td></tr>
+</tbody></table></div></details></figure>
+  </div>
+</section>
+
+<section class="block" id="equipes">
+  <h2>Equipes</h2>
+  <p class="lead">A taxa considera apenas as partidas em que a equipe aparece como lado representado na fonte operacional.</p>
+  <div class="cards">
+    <figure class="card span6"><figcaption><h3>Maior taxa de vitória (mínimo de 50 partidas)</h3><p class="note">Top 20 do recorte de 95 equipes elegíveis; passe o mouse para ver vitórias e derrotas.</p></figcaption><div class="chart">
+<svg viewBox="0 0 545 618" role="img" aria-label="Vinte equipes com maior taxa de vitória">
+<line x1="118.0" x2="118.0" y1="8" y2="588" class="grid"/><text x="118.0" y="608" class="tick" text-anchor="middle">0%</text><line x1="210.8" x2="210.8" y1="8" y2="588" class="grid"/><text x="210.8" y="608" class="tick" text-anchor="middle">25%</text><line x1="303.5" x2="303.5" y1="8" y2="588" class="grid"/><text x="303.5" y="608" class="tick" text-anchor="middle">50%</text><line x1="396.2" x2="396.2" y1="8" y2="588" class="grid"/><text x="396.2" y="608" class="tick" text-anchor="middle">75%</text><line x1="489.0" x2="489.0" y1="8" y2="588" class="grid"/><text x="489.0" y="608" class="tick" text-anchor="middle">100%</text><rect x="0" y="8.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="Vitality" data-tip-rows="79,4%::Taxa de vitória;;175::Partidas representadas;;139::Vitórias;;36::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,14.5 L408.7,14.5 Q412.7,14.5 412.7,18.5 L412.7,26.5 Q412.7,30.5 408.7,30.5 L118.0,30.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="26.5" class="cat" text-anchor="end" pointer-events="none">Vitality</text><text x="418.7" y="26.5" class="val" pointer-events="none">79,4%</text><rect x="0" y="37.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="Spirit" data-tip-rows="74,5%::Taxa de vitória;;188::Partidas representadas;;140::Vitórias;;48::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,43.5 L390.3,43.5 Q394.3,43.5 394.3,47.5 L394.3,55.5 Q394.3,59.5 390.3,59.5 L118.0,59.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="55.5" class="cat" text-anchor="end" pointer-events="none">Spirit</text><text x="400.3" y="55.5" class="val" pointer-events="none">74,5%</text><rect x="0" y="66.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="M80" data-tip-rows="68,9%::Taxa de vitória;;267::Partidas representadas;;184::Vitórias;;83::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,72.5 L369.7,72.5 Q373.7,72.5 373.7,76.5 L373.7,84.5 Q373.7,88.5 369.7,88.5 L118.0,88.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="84.5" class="cat" text-anchor="end" pointer-events="none">M80</text><text x="379.7" y="84.5" class="val" pointer-events="none">68,9%</text><rect x="0" y="95.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="NRG" data-tip-rows="68,0%::Taxa de vitória;;291::Partidas representadas;;198::Vitórias;;93::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,101.5 L366.4,101.5 Q370.4,101.5 370.4,105.5 L370.4,113.5 Q370.4,117.5 366.4,117.5 L118.0,117.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="113.5" class="cat" text-anchor="end" pointer-events="none">NRG</text><text x="376.4" y="113.5" class="val" pointer-events="none">68,0%</text><rect x="0" y="124.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="K27" data-tip-rows="65,3%::Taxa de vitória;;150::Partidas representadas;;98::Vitórias;;52::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,130.5 L356.4,130.5 Q360.4,130.5 360.4,134.5 L360.4,142.5 Q360.4,146.5 356.4,146.5 L118.0,146.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="142.5" class="cat" text-anchor="end" pointer-events="none">K27</text><text x="366.4" y="142.5" class="val" pointer-events="none">65,3%</text><rect x="0" y="153.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="MOUZ" data-tip-rows="65,3%::Taxa de vitória;;193::Partidas representadas;;126::Vitórias;;67::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,159.5 L356.2,159.5 Q360.2,159.5 360.2,163.5 L360.2,171.5 Q360.2,175.5 356.2,175.5 L118.0,175.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="171.5" class="cat" text-anchor="end" pointer-events="none">MOUZ</text><text x="366.2" y="171.5" class="val" pointer-events="none">65,3%</text><rect x="0" y="182.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="The MongolZ" data-tip-rows="65,2%::Taxa de vitória;;224::Partidas representadas;;146::Vitórias;;78::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,188.5 L355.8,188.5 Q359.8,188.5 359.8,192.5 L359.8,200.5 Q359.8,204.5 355.8,204.5 L118.0,204.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="200.5" class="cat" text-anchor="end" pointer-events="none">The MongolZ</text><text x="365.8" y="200.5" class="val" pointer-events="none">65,2%</text><rect x="0" y="211.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="Nouns" data-tip-rows="65,0%::Taxa de vitória;;246::Partidas representadas;;160::Vitórias;;86::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,217.5 L355.3,217.5 Q359.3,217.5 359.3,221.5 L359.3,229.5 Q359.3,233.5 355.3,233.5 L118.0,233.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="229.5" class="cat" text-anchor="end" pointer-events="none">Nouns</text><text x="365.3" y="229.5" class="val" pointer-events="none">65,0%</text><rect x="0" y="240.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="Imperial" data-tip-rows="64,9%::Taxa de vitória;;325::Partidas representadas;;211::Vitórias;;114::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,246.5 L354.9,246.5 Q358.9,246.5 358.9,250.5 L358.9,258.5 Q358.9,262.5 354.9,262.5 L118.0,262.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="258.5" class="cat" text-anchor="end" pointer-events="none">Imperial</text><text x="364.9" y="258.5" class="val" pointer-events="none">64,9%</text><rect x="0" y="269.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="NAVI Junior" data-tip-rows="64,8%::Taxa de vitória;;179::Partidas representadas;;116::Vitórias;;63::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,275.5 L354.4,275.5 Q358.4,275.5 358.4,279.5 L358.4,287.5 Q358.4,291.5 354.4,291.5 L118.0,291.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="287.5" class="cat" text-anchor="end" pointer-events="none">NAVI Junior</text><text x="364.4" y="287.5" class="val" pointer-events="none">64,8%</text><rect x="0" y="298.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="Natus Vincere" data-tip-rows="64,0%::Taxa de vitória;;178::Partidas representadas;;114::Vitórias;;64::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,304.5 L351.6,304.5 Q355.6,304.5 355.6,308.5 L355.6,316.5 Q355.6,320.5 351.6,320.5 L118.0,320.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="316.5" class="cat" text-anchor="end" pointer-events="none">Natus Vincere</text><text x="361.6" y="316.5" class="val" pointer-events="none">64,0%</text><rect x="0" y="327.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="TNL" data-tip-rows="62,9%::Taxa de vitória;;124::Partidas representadas;;78::Vitórias;;46::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,333.5 L347.4,333.5 Q351.4,333.5 351.4,337.5 L351.4,345.5 Q351.4,349.5 347.4,349.5 L118.0,349.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="345.5" class="cat" text-anchor="end" pointer-events="none">TNL</text><text x="357.4" y="345.5" class="val" pointer-events="none">62,9%</text><rect x="0" y="356.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="BetBoom" data-tip-rows="62,5%::Taxa de vitória;;277::Partidas representadas;;173::Vitórias;;104::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,362.5 L345.7,362.5 Q349.7,362.5 349.7,366.5 L349.7,374.5 Q349.7,378.5 345.7,378.5 L118.0,378.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="374.5" class="cat" text-anchor="end" pointer-events="none">BetBoom</text><text x="355.7" y="374.5" class="val" pointer-events="none">62,5%</text><rect x="0" y="385.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="Iberian Soul" data-tip-rows="62,4%::Taxa de vitória;;101::Partidas representadas;;63::Vitórias;;38::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,391.5 L345.4,391.5 Q349.4,391.5 349.4,395.5 L349.4,403.5 Q349.4,407.5 345.4,407.5 L118.0,407.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="403.5" class="cat" text-anchor="end" pointer-events="none">Iberian Soul</text><text x="355.4" y="403.5" class="val" pointer-events="none">62,4%</text><rect x="0" y="414.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="ATOX" data-tip-rows="62,4%::Taxa de vitória;;93::Partidas representadas;;58::Vitórias;;35::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,420.5 L345.4,420.5 Q349.4,420.5 349.4,424.5 L349.4,432.5 Q349.4,436.5 345.4,436.5 L118.0,436.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="432.5" class="cat" text-anchor="end" pointer-events="none">ATOX</text><text x="355.4" y="432.5" class="val" pointer-events="none">62,4%</text><rect x="0" y="443.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="Legacy" data-tip-rows="62,0%::Taxa de vitória;;284::Partidas representadas;;176::Vitórias;;108::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,449.5 L343.9,449.5 Q347.9,449.5 347.9,453.5 L347.9,461.5 Q347.9,465.5 343.9,465.5 L118.0,465.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="461.5" class="cat" text-anchor="end" pointer-events="none">Legacy</text><text x="353.9" y="461.5" class="val" pointer-events="none">62,0%</text><rect x="0" y="472.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="Fluxo" data-tip-rows="61,9%::Taxa de vitória;;312::Partidas representadas;;193::Vitórias;;119::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,478.5 L343.5,478.5 Q347.5,478.5 347.5,482.5 L347.5,490.5 Q347.5,494.5 343.5,494.5 L118.0,494.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="490.5" class="cat" text-anchor="end" pointer-events="none">Fluxo</text><text x="353.5" y="490.5" class="val" pointer-events="none">61,9%</text><rect x="0" y="501.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="Rare Atom" data-tip-rows="61,7%::Taxa de vitória;;209::Partidas representadas;;129::Vitórias;;80::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,507.5 L343.0,507.5 Q347.0,507.5 347.0,511.5 L347.0,519.5 Q347.0,523.5 343.0,523.5 L118.0,523.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="519.5" class="cat" text-anchor="end" pointer-events="none">Rare Atom</text><text x="353.0" y="519.5" class="val" pointer-events="none">61,7%</text><rect x="0" y="530.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="MIBR" data-tip-rows="61,6%::Taxa de vitória;;271::Partidas representadas;;167::Vitórias;;104::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,536.5 L342.6,536.5 Q346.6,536.5 346.6,540.5 L346.6,548.5 Q346.6,552.5 342.6,552.5 L118.0,552.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="548.5" class="cat" text-anchor="end" pointer-events="none">MIBR</text><text x="352.6" y="548.5" class="val" pointer-events="none">61,6%</text><rect x="0" y="559.0" width="545" height="29" fill="transparent" class="row-hit" data-tip-title="BESTIA" data-tip-rows="61,5%::Taxa de vitória;;332::Partidas representadas;;204::Vitórias;;128::Derrotas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,565.5 L342.0,565.5 Q346.0,565.5 346.0,569.5 L346.0,577.5 Q346.0,581.5 342.0,581.5 L118.0,581.5 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="577.5" class="cat" text-anchor="end" pointer-events="none">BESTIA</text><text x="352.0" y="577.5" class="val" pointer-events="none">61,5%</text>
+</svg>
+</div><details class="table-view"><summary>Ver as 95 equipes em tabela</summary><div class="table-scroll"><table><thead><tr><th scope="col">#</th><th scope="col">Equipe</th><th scope="col">Partidas</th><th scope="col">Vitórias</th><th scope="col">Derrotas</th><th scope="col">Taxa de vitória</th></tr></thead><tbody>
+<tr><td>1</td><td>Vitality</td><td>175</td><td>139</td><td>36</td><td>79,43%</td></tr>
+<tr><td>2</td><td>Spirit</td><td>188</td><td>140</td><td>48</td><td>74,47%</td></tr>
+<tr><td>3</td><td>M80</td><td>267</td><td>184</td><td>83</td><td>68,91%</td></tr>
+<tr><td>4</td><td>NRG</td><td>291</td><td>198</td><td>93</td><td>68,04%</td></tr>
+<tr><td>5</td><td>K27</td><td>150</td><td>98</td><td>52</td><td>65,33%</td></tr>
+<tr><td>6</td><td>MOUZ</td><td>193</td><td>126</td><td>67</td><td>65,28%</td></tr>
+<tr><td>7</td><td>The MongolZ</td><td>224</td><td>146</td><td>78</td><td>65,18%</td></tr>
+<tr><td>8</td><td>Nouns</td><td>246</td><td>160</td><td>86</td><td>65,04%</td></tr>
+<tr><td>9</td><td>Imperial</td><td>325</td><td>211</td><td>114</td><td>64,92%</td></tr>
+<tr><td>10</td><td>NAVI Junior</td><td>179</td><td>116</td><td>63</td><td>64,80%</td></tr>
+<tr><td>11</td><td>Natus Vincere</td><td>178</td><td>114</td><td>64</td><td>64,04%</td></tr>
+<tr><td>12</td><td>TNL</td><td>124</td><td>78</td><td>46</td><td>62,90%</td></tr>
+<tr><td>13</td><td>BetBoom</td><td>277</td><td>173</td><td>104</td><td>62,45%</td></tr>
+<tr><td>14</td><td>Iberian Soul</td><td>101</td><td>63</td><td>38</td><td>62,38%</td></tr>
+<tr><td>15</td><td>ATOX</td><td>93</td><td>58</td><td>35</td><td>62,37%</td></tr>
+<tr><td>16</td><td>Legacy</td><td>284</td><td>176</td><td>108</td><td>61,97%</td></tr>
+<tr><td>17</td><td>Fluxo</td><td>312</td><td>193</td><td>119</td><td>61,86%</td></tr>
+<tr><td>18</td><td>Rare Atom</td><td>209</td><td>129</td><td>80</td><td>61,72%</td></tr>
+<tr><td>19</td><td>MIBR</td><td>271</td><td>167</td><td>104</td><td>61,62%</td></tr>
+<tr><td>20</td><td>BESTIA</td><td>332</td><td>204</td><td>128</td><td>61,45%</td></tr>
+<tr><td>21</td><td>RED Canids</td><td>359</td><td>220</td><td>139</td><td>61,28%</td></tr>
+<tr><td>22</td><td>Marsborne</td><td>171</td><td>104</td><td>67</td><td>60,82%</td></tr>
+<tr><td>23</td><td>TYLOO</td><td>181</td><td>110</td><td>71</td><td>60,77%</td></tr>
+<tr><td>24</td><td>FUT</td><td>84</td><td>51</td><td>33</td><td>60,71%</td></tr>
+<tr><td>25</td><td>Gentle Mates</td><td>56</td><td>34</td><td>22</td><td>60,71%</td></tr>
+<tr><td>26</td><td>9z</td><td>259</td><td>157</td><td>102</td><td>60,62%</td></tr>
+<tr><td>27</td><td>Wildcard</td><td>264</td><td>160</td><td>104</td><td>60,61%</td></tr>
+<tr><td>28</td><td>Spirit Academy</td><td>175</td><td>106</td><td>69</td><td>60,57%</td></tr>
+<tr><td>29</td><td>G2</td><td>192</td><td>116</td><td>76</td><td>60,42%</td></tr>
+<tr><td>30</td><td>paiN</td><td>320</td><td>193</td><td>127</td><td>60,31%</td></tr>
+<tr><td>31</td><td>Sharks</td><td>394</td><td>236</td><td>158</td><td>59,90%</td></tr>
+<tr><td>32</td><td>ECSTATIC</td><td>328</td><td>196</td><td>132</td><td>59,76%</td></tr>
+<tr><td>33</td><td>FURIA</td><td>223</td><td>133</td><td>90</td><td>59,64%</td></tr>
+<tr><td>34</td><td>FORZE</td><td>84</td><td>50</td><td>34</td><td>59,52%</td></tr>
+<tr><td>35</td><td>HOTU</td><td>153</td><td>91</td><td>62</td><td>59,48%</td></tr>
+<tr><td>36</td><td>Oramond</td><td>86</td><td>51</td><td>35</td><td>59,30%</td></tr>
+<tr><td>37</td><td>FlyQuest</td><td>137</td><td>81</td><td>56</td><td>59,12%</td></tr>
+<tr><td>38</td><td>FaZe</td><td>215</td><td>127</td><td>88</td><td>59,07%</td></tr>
+<tr><td>39</td><td>B8</td><td>284</td><td>167</td><td>117</td><td>58,80%</td></tr>
+<tr><td>40</td><td>PARIVISION</td><td>273</td><td>160</td><td>113</td><td>58,61%</td></tr>
+<tr><td>41</td><td>Nemiga</td><td>288</td><td>168</td><td>120</td><td>58,33%</td></tr>
+<tr><td>42</td><td>Lynn Vision</td><td>184</td><td>107</td><td>77</td><td>58,15%</td></tr>
+<tr><td>43</td><td>ODDIK</td><td>368</td><td>213</td><td>155</td><td>57,88%</td></tr>
+<tr><td>44</td><td>Astrum</td><td>52</td><td>30</td><td>22</td><td>57,69%</td></tr>
+<tr><td>45</td><td>9 Pandas</td><td>225</td><td>129</td><td>96</td><td>57,33%</td></tr>
+<tr><td>46</td><td>BLEED</td><td>107</td><td>61</td><td>46</td><td>57,01%</td></tr>
+<tr><td>47</td><td>Aurora</td><td>311</td><td>177</td><td>134</td><td>56,91%</td></tr>
+<tr><td>48</td><td>MOUZ NXT</td><td>255</td><td>145</td><td>110</td><td>56,86%</td></tr>
+<tr><td>49</td><td>Monte</td><td>336</td><td>191</td><td>145</td><td>56,85%</td></tr>
+<tr><td>50</td><td>SAW</td><td>217</td><td>123</td><td>94</td><td>56,68%</td></tr>
+<tr><td>51</td><td>Cloud9</td><td>85</td><td>48</td><td>37</td><td>56,47%</td></tr>
+<tr><td>52</td><td>HEROIC</td><td>217</td><td>122</td><td>95</td><td>56,22%</td></tr>
+<tr><td>53</td><td>Liquid</td><td>191</td><td>107</td><td>84</td><td>56,02%</td></tr>
+<tr><td>54</td><td>Eternal Fire</td><td>277</td><td>155</td><td>122</td><td>55,96%</td></tr>
+<tr><td>55</td><td>Alliance</td><td>323</td><td>180</td><td>143</td><td>55,73%</td></tr>
+<tr><td>56</td><td>Sangal</td><td>285</td><td>158</td><td>127</td><td>55,44%</td></tr>
+<tr><td>57</td><td>OG</td><td>222</td><td>123</td><td>99</td><td>55,41%</td></tr>
+<tr><td>58</td><td>fnatic</td><td>263</td><td>145</td><td>118</td><td>55,13%</td></tr>
+<tr><td>59</td><td>SINNERS</td><td>394</td><td>217</td><td>177</td><td>55,08%</td></tr>
+<tr><td>60</td><td>3DMAX</td><td>256</td><td>141</td><td>115</td><td>55,08%</td></tr>
+<tr><td>61</td><td>ECLOT</td><td>331</td><td>181</td><td>150</td><td>54,68%</td></tr>
+<tr><td>62</td><td>BIG</td><td>250</td><td>136</td><td>114</td><td>54,40%</td></tr>
+<tr><td>63</td><td>Chinggis Warriors</td><td>173</td><td>94</td><td>79</td><td>54,34%</td></tr>
+<tr><td>64</td><td>Passion UA</td><td>326</td><td>177</td><td>149</td><td>54,29%</td></tr>
+<tr><td>65</td><td>GUN5</td><td>282</td><td>153</td><td>129</td><td>54,26%</td></tr>
+<tr><td>66</td><td>PERA</td><td>74</td><td>40</td><td>34</td><td>54,05%</td></tr>
+<tr><td>67</td><td>Zero Tenacity</td><td>387</td><td>209</td><td>178</td><td>54,01%</td></tr>
+<tr><td>68</td><td>CYBERSHOKE</td><td>314</td><td>168</td><td>146</td><td>53,50%</td></tr>
+<tr><td>69</td><td>9INE</td><td>354</td><td>189</td><td>165</td><td>53,39%</td></tr>
+<tr><td>70</td><td>AMKAL</td><td>214</td><td>114</td><td>100</td><td>53,27%</td></tr>
+<tr><td>71</td><td>Into the Breach</td><td>107</td><td>57</td><td>50</td><td>53,27%</td></tr>
+<tr><td>72</td><td>Complexity</td><td>132</td><td>70</td><td>62</td><td>53,03%</td></tr>
+<tr><td>73</td><td>Apeks</td><td>83</td><td>44</td><td>39</td><td>53,01%</td></tr>
+<tr><td>74</td><td>500</td><td>252</td><td>133</td><td>119</td><td>52,78%</td></tr>
+<tr><td>75</td><td>Gaimin Gladiators</td><td>152</td><td>80</td><td>72</td><td>52,63%</td></tr>
+<tr><td>76</td><td>ENCE</td><td>253</td><td>133</td><td>120</td><td>52,57%</td></tr>
+<tr><td>77</td><td>Virtus.pro</td><td>169</td><td>88</td><td>81</td><td>52,07%</td></tr>
+<tr><td>78</td><td>Falcons</td><td>177</td><td>92</td><td>85</td><td>51,98%</td></tr>
+<tr><td>79</td><td>GamerLegion</td><td>212</td><td>110</td><td>102</td><td>51,89%</td></tr>
+<tr><td>80</td><td>Guild Eagles</td><td>62</td><td>32</td><td>30</td><td>51,61%</td></tr>
+<tr><td>81</td><td>Astralis</td><td>188</td><td>97</td><td>91</td><td>51,60%</td></tr>
+<tr><td>82</td><td>Sashi</td><td>355</td><td>183</td><td>172</td><td>51,55%</td></tr>
+<tr><td>83</td><td>JiJieHao</td><td>158</td><td>81</td><td>77</td><td>51,27%</td></tr>
+<tr><td>84</td><td>BC.Game</td><td>172</td><td>88</td><td>84</td><td>51,16%</td></tr>
+<tr><td>85</td><td>EYEBALLERS</td><td>323</td><td>164</td><td>159</td><td>50,77%</td></tr>
+<tr><td>86</td><td>Inner Circle</td><td>77</td><td>39</td><td>38</td><td>50,65%</td></tr>
+<tr><td>87</td><td>Ninjas in Pyjamas</td><td>216</td><td>108</td><td>108</td><td>50,00%</td></tr>
+<tr><td>88</td><td>KOI</td><td>95</td><td>46</td><td>49</td><td>48,42%</td></tr>
+<tr><td>89</td><td>GODSENT</td><td>52</td><td>25</td><td>27</td><td>48,08%</td></tr>
+<tr><td>90</td><td>Sprout</td><td>75</td><td>36</td><td>39</td><td>48,00%</td></tr>
+<tr><td>91</td><td>Rebels</td><td>175</td><td>83</td><td>92</td><td>47,43%</td></tr>
+<tr><td>92</td><td>Preasy</td><td>159</td><td>73</td><td>86</td><td>45,91%</td></tr>
+<tr><td>93</td><td>Anonymo</td><td>124</td><td>56</td><td>68</td><td>45,16%</td></tr>
+<tr><td>94</td><td>Nexus</td><td>354</td><td>150</td><td>204</td><td>42,37%</td></tr>
+<tr><td>95</td><td>HAVU</td><td>128</td><td>50</td><td>78</td><td>39,06%</td></tr>
+</tbody></table></div></details></figure>
+    <figure class="card span6"><figcaption><h3>Volume e taxa de vitória (95 equipes)</h3><p class="note">Cada ponto é uma equipe; aproxime o cursor para identificar qualquer uma delas.</p></figcaption><div class="chart" id="teams-interactive-chart" data-nearest-chart>
+<svg viewBox="0 0 545 610" role="img" aria-label="Dispersão de volume de partidas por taxa de vitória das 95 equipes">
+<line x1="52" x2="529" y1="523.7" y2="523.7" class="grid"/><text x="44" y="527.7" class="tick" text-anchor="end">30%</text><line x1="52" x2="529" y1="431.0" y2="431.0" class="grid"/><text x="44" y="435.0" class="tick" text-anchor="end">40%</text><line x1="52" x2="529" y1="338.3" y2="338.3" class="grid"/><text x="44" y="342.3" class="tick" text-anchor="end">50%</text><line x1="52" x2="529" y1="245.7" y2="245.7" class="grid"/><text x="44" y="249.7" class="tick" text-anchor="end">60%</text><line x1="52" x2="529" y1="153.0" y2="153.0" class="grid"/><text x="44" y="157.0" class="tick" text-anchor="end">70%</text><line x1="52" x2="529" y1="60.3" y2="60.3" class="grid"/><text x="44" y="64.3" class="tick" text-anchor="end">80%</text><text x="52.0" y="596" class="tick" text-anchor="middle">0</text><text x="171.2" y="596" class="tick" text-anchor="middle">100</text><text x="290.5" y="596" class="tick" text-anchor="middle">200</text><text x="409.8" y="596" class="tick" text-anchor="middle">300</text><text x="529.0" y="596" class="tick" text-anchor="middle">400</text><circle cx="260.7" cy="65.6" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="276.2" cy="111.6" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="370.4" cy="163.1" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="399.0" cy="171.2" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="230.9" cy="196.3" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="282.2" cy="196.7" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="319.1" cy="197.7" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="345.4" cy="199.0" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="439.6" cy="200.1" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="265.5" cy="201.2" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="264.3" cy="208.2" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="199.9" cy="218.8" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="382.3" cy="223.0" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="172.4" cy="223.6" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="162.9" cy="223.7" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="390.7" cy="227.4" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="424.1" cy="228.4" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="301.2" cy="229.7" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="375.2" cy="230.7" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="447.9" cy="232.2" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="480.1" cy="233.8" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="255.9" cy="238.1" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="267.8" cy="238.5" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="152.2" cy="239.1" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="118.8" cy="239.1" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="360.9" cy="239.9" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="366.8" cy="240.0" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="260.7" cy="240.4" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="281.0" cy="241.8" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="433.6" cy="242.8" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="521.8" cy="246.6" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="443.1" cy="247.9" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="317.9" cy="249.0" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="152.2" cy="250.1" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="234.5" cy="250.5" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="154.6" cy="252.2" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="215.4" cy="253.8" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="308.4" cy="254.3" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="390.7" cy="256.8" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="377.6" cy="258.5" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="395.4" cy="261.1" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="271.4" cy="262.8" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="490.8" cy="265.3" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="114.0" cy="267.1" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="320.3" cy="270.4" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="179.6" cy="273.4" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="422.9" cy="274.3" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="356.1" cy="274.8" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="452.7" cy="274.9" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="310.8" cy="276.4" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="153.4" cy="278.4" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="310.8" cy="280.7" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="279.8" cy="282.5" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="382.3" cy="283.1" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="437.2" cy="285.2" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="391.9" cy="287.9" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="316.7" cy="288.2" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="365.6" cy="290.8" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="521.8" cy="291.3" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="357.3" cy="291.3" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="446.7" cy="295.0" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="350.1" cy="297.6" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="258.3" cy="298.1" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="440.8" cy="298.6" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="388.3" cy="298.9" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="140.2" cy="300.8" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="513.5" cy="301.2" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="426.4" cy="305.9" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="474.1" cy="306.9" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="307.2" cy="308.0" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="179.6" cy="308.0" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="209.4" cy="310.3" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="151.0" cy="310.4" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="352.5" cy="312.6" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="233.3" cy="314.0" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="353.7" cy="314.5" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="253.5" cy="319.2" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="263.1" cy="320.0" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="304.8" cy="320.8" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="125.9" cy="323.4" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="276.2" cy="323.5" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="475.3" cy="324.0" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="240.4" cy="326.6" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="257.1" cy="327.6" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="437.2" cy="331.2" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="143.8" cy="332.3" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="309.6" cy="338.3" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="165.3" cy="353.0" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="114.0" cy="356.1" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="141.4" cy="356.9" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="260.7" cy="362.1" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="241.6" cy="376.2" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="199.9" cy="383.2" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="474.1" cy="409.0" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><circle cx="204.6" cy="439.7" r="5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="dot"/><text x="512.8" y="250.6" class="anno" text-anchor="end">Sharks</text><text x="512.8" y="295.3" class="anno" text-anchor="end">SINNERS</text><text x="504.5" y="305.2" class="anno" text-anchor="end">Zero Tenacity</text><text x="269.7" y="69.6" class="anno">Vitality</text>
+<line x1="52" x2="529" y1="570" y2="570" class="axis"/>
+<text x="290.5" y="609" class="tick" text-anchor="middle">Partidas representadas</text>
+<circle class="nearest-halo" r="8" fill="none" stroke="var(--s1)" stroke-width="2" opacity="0"/>
+</svg>
+<script type="application/json" data-nearest>{"points": [{"x": 260.7, "y": 65.6, "title": "Vitality", "rows": [["79,4%", "Taxa de vitória"], ["175", "Partidas representadas"], ["139", "Vitórias"], ["36", "Derrotas"]]}, {"x": 276.2, "y": 111.6, "title": "Spirit", "rows": [["74,5%", "Taxa de vitória"], ["188", "Partidas representadas"], ["140", "Vitórias"], ["48", "Derrotas"]]}, {"x": 370.4, "y": 163.1, "title": "M80", "rows": [["68,9%", "Taxa de vitória"], ["267", "Partidas representadas"], ["184", "Vitórias"], ["83", "Derrotas"]]}, {"x": 399.0, "y": 171.2, "title": "NRG", "rows": [["68,0%", "Taxa de vitória"], ["291", "Partidas representadas"], ["198", "Vitórias"], ["93", "Derrotas"]]}, {"x": 230.9, "y": 196.3, "title": "K27", "rows": [["65,3%", "Taxa de vitória"], ["150", "Partidas representadas"], ["98", "Vitórias"], ["52", "Derrotas"]]}, {"x": 282.2, "y": 196.7, "title": "MOUZ", "rows": [["65,3%", "Taxa de vitória"], ["193", "Partidas representadas"], ["126", "Vitórias"], ["67", "Derrotas"]]}, {"x": 319.1, "y": 197.7, "title": "The MongolZ", "rows": [["65,2%", "Taxa de vitória"], ["224", "Partidas representadas"], ["146", "Vitórias"], ["78", "Derrotas"]]}, {"x": 345.4, "y": 199.0, "title": "Nouns", "rows": [["65,0%", "Taxa de vitória"], ["246", "Partidas representadas"], ["160", "Vitórias"], ["86", "Derrotas"]]}, {"x": 439.6, "y": 200.1, "title": "Imperial", "rows": [["64,9%", "Taxa de vitória"], ["325", "Partidas representadas"], ["211", "Vitórias"], ["114", "Derrotas"]]}, {"x": 265.5, "y": 201.2, "title": "NAVI Junior", "rows": [["64,8%", "Taxa de vitória"], ["179", "Partidas representadas"], ["116", "Vitórias"], ["63", "Derrotas"]]}, {"x": 264.3, "y": 208.2, "title": "Natus Vincere", "rows": [["64,0%", "Taxa de vitória"], ["178", "Partidas representadas"], ["114", "Vitórias"], ["64", "Derrotas"]]}, {"x": 199.9, "y": 218.8, "title": "TNL", "rows": [["62,9%", "Taxa de vitória"], ["124", "Partidas representadas"], ["78", "Vitórias"], ["46", "Derrotas"]]}, {"x": 382.3, "y": 223.0, "title": "BetBoom", "rows": [["62,5%", "Taxa de vitória"], ["277", "Partidas representadas"], ["173", "Vitórias"], ["104", "Derrotas"]]}, {"x": 172.4, "y": 223.6, "title": "Iberian Soul", "rows": [["62,4%", "Taxa de vitória"], ["101", "Partidas representadas"], ["63", "Vitórias"], ["38", "Derrotas"]]}, {"x": 162.9, "y": 223.7, "title": "ATOX", "rows": [["62,4%", "Taxa de vitória"], ["93", "Partidas representadas"], ["58", "Vitórias"], ["35", "Derrotas"]]}, {"x": 390.7, "y": 227.4, "title": "Legacy", "rows": [["62,0%", "Taxa de vitória"], ["284", "Partidas representadas"], ["176", "Vitórias"], ["108", "Derrotas"]]}, {"x": 424.1, "y": 228.4, "title": "Fluxo", "rows": [["61,9%", "Taxa de vitória"], ["312", "Partidas representadas"], ["193", "Vitórias"], ["119", "Derrotas"]]}, {"x": 301.2, "y": 229.7, "title": "Rare Atom", "rows": [["61,7%", "Taxa de vitória"], ["209", "Partidas representadas"], ["129", "Vitórias"], ["80", "Derrotas"]]}, {"x": 375.2, "y": 230.7, "title": "MIBR", "rows": [["61,6%", "Taxa de vitória"], ["271", "Partidas representadas"], ["167", "Vitórias"], ["104", "Derrotas"]]}, {"x": 447.9, "y": 232.2, "title": "BESTIA", "rows": [["61,5%", "Taxa de vitória"], ["332", "Partidas representadas"], ["204", "Vitórias"], ["128", "Derrotas"]]}, {"x": 480.1, "y": 233.8, "title": "RED Canids", "rows": [["61,3%", "Taxa de vitória"], ["359", "Partidas representadas"], ["220", "Vitórias"], ["139", "Derrotas"]]}, {"x": 255.9, "y": 238.1, "title": "Marsborne", "rows": [["60,8%", "Taxa de vitória"], ["171", "Partidas representadas"], ["104", "Vitórias"], ["67", "Derrotas"]]}, {"x": 267.8, "y": 238.5, "title": "TYLOO", "rows": [["60,8%", "Taxa de vitória"], ["181", "Partidas representadas"], ["110", "Vitórias"], ["71", "Derrotas"]]}, {"x": 152.2, "y": 239.1, "title": "FUT", "rows": [["60,7%", "Taxa de vitória"], ["84", "Partidas representadas"], ["51", "Vitórias"], ["33", "Derrotas"]]}, {"x": 118.8, "y": 239.1, "title": "Gentle Mates", "rows": [["60,7%", "Taxa de vitória"], ["56", "Partidas representadas"], ["34", "Vitórias"], ["22", "Derrotas"]]}, {"x": 360.9, "y": 239.9, "title": "9z", "rows": [["60,6%", "Taxa de vitória"], ["259", "Partidas representadas"], ["157", "Vitórias"], ["102", "Derrotas"]]}, {"x": 366.8, "y": 240.0, "title": "Wildcard", "rows": [["60,6%", "Taxa de vitória"], ["264", "Partidas representadas"], ["160", "Vitórias"], ["104", "Derrotas"]]}, {"x": 260.7, "y": 240.4, "title": "Spirit Academy", "rows": [["60,6%", "Taxa de vitória"], ["175", "Partidas representadas"], ["106", "Vitórias"], ["69", "Derrotas"]]}, {"x": 281.0, "y": 241.8, "title": "G2", "rows": [["60,4%", "Taxa de vitória"], ["192", "Partidas representadas"], ["116", "Vitórias"], ["76", "Derrotas"]]}, {"x": 433.6, "y": 242.8, "title": "paiN", "rows": [["60,3%", "Taxa de vitória"], ["320", "Partidas representadas"], ["193", "Vitórias"], ["127", "Derrotas"]]}, {"x": 521.8, "y": 246.6, "title": "Sharks", "rows": [["59,9%", "Taxa de vitória"], ["394", "Partidas representadas"], ["236", "Vitórias"], ["158", "Derrotas"]]}, {"x": 443.1, "y": 247.9, "title": "ECSTATIC", "rows": [["59,8%", "Taxa de vitória"], ["328", "Partidas representadas"], ["196", "Vitórias"], ["132", "Derrotas"]]}, {"x": 317.9, "y": 249.0, "title": "FURIA", "rows": [["59,6%", "Taxa de vitória"], ["223", "Partidas representadas"], ["133", "Vitórias"], ["90", "Derrotas"]]}, {"x": 152.2, "y": 250.1, "title": "FORZE", "rows": [["59,5%", "Taxa de vitória"], ["84", "Partidas representadas"], ["50", "Vitórias"], ["34", "Derrotas"]]}, {"x": 234.5, "y": 250.5, "title": "HOTU", "rows": [["59,5%", "Taxa de vitória"], ["153", "Partidas representadas"], ["91", "Vitórias"], ["62", "Derrotas"]]}, {"x": 154.6, "y": 252.2, "title": "Oramond", "rows": [["59,3%", "Taxa de vitória"], ["86", "Partidas representadas"], ["51", "Vitórias"], ["35", "Derrotas"]]}, {"x": 215.4, "y": 253.8, "title": "FlyQuest", "rows": [["59,1%", "Taxa de vitória"], ["137", "Partidas representadas"], ["81", "Vitórias"], ["56", "Derrotas"]]}, {"x": 308.4, "y": 254.3, "title": "FaZe", "rows": [["59,1%", "Taxa de vitória"], ["215", "Partidas representadas"], ["127", "Vitórias"], ["88", "Derrotas"]]}, {"x": 390.7, "y": 256.8, "title": "B8", "rows": [["58,8%", "Taxa de vitória"], ["284", "Partidas representadas"], ["167", "Vitórias"], ["117", "Derrotas"]]}, {"x": 377.6, "y": 258.5, "title": "PARIVISION", "rows": [["58,6%", "Taxa de vitória"], ["273", "Partidas representadas"], ["160", "Vitórias"], ["113", "Derrotas"]]}, {"x": 395.4, "y": 261.1, "title": "Nemiga", "rows": [["58,3%", "Taxa de vitória"], ["288", "Partidas representadas"], ["168", "Vitórias"], ["120", "Derrotas"]]}, {"x": 271.4, "y": 262.8, "title": "Lynn Vision", "rows": [["58,1%", "Taxa de vitória"], ["184", "Partidas representadas"], ["107", "Vitórias"], ["77", "Derrotas"]]}, {"x": 490.8, "y": 265.3, "title": "ODDIK", "rows": [["57,9%", "Taxa de vitória"], ["368", "Partidas representadas"], ["213", "Vitórias"], ["155", "Derrotas"]]}, {"x": 114.0, "y": 267.1, "title": "Astrum", "rows": [["57,7%", "Taxa de vitória"], ["52", "Partidas representadas"], ["30", "Vitórias"], ["22", "Derrotas"]]}, {"x": 320.3, "y": 270.4, "title": "9 Pandas", "rows": [["57,3%", "Taxa de vitória"], ["225", "Partidas representadas"], ["129", "Vitórias"], ["96", "Derrotas"]]}, {"x": 179.6, "y": 273.4, "title": "BLEED", "rows": [["57,0%", "Taxa de vitória"], ["107", "Partidas representadas"], ["61", "Vitórias"], ["46", "Derrotas"]]}, {"x": 422.9, "y": 274.3, "title": "Aurora", "rows": [["56,9%", "Taxa de vitória"], ["311", "Partidas representadas"], ["177", "Vitórias"], ["134", "Derrotas"]]}, {"x": 356.1, "y": 274.8, "title": "MOUZ NXT", "rows": [["56,9%", "Taxa de vitória"], ["255", "Partidas representadas"], ["145", "Vitórias"], ["110", "Derrotas"]]}, {"x": 452.7, "y": 274.9, "title": "Monte", "rows": [["56,9%", "Taxa de vitória"], ["336", "Partidas representadas"], ["191", "Vitórias"], ["145", "Derrotas"]]}, {"x": 310.8, "y": 276.4, "title": "SAW", "rows": [["56,7%", "Taxa de vitória"], ["217", "Partidas representadas"], ["123", "Vitórias"], ["94", "Derrotas"]]}, {"x": 153.4, "y": 278.4, "title": "Cloud9", "rows": [["56,5%", "Taxa de vitória"], ["85", "Partidas representadas"], ["48", "Vitórias"], ["37", "Derrotas"]]}, {"x": 310.8, "y": 280.7, "title": "HEROIC", "rows": [["56,2%", "Taxa de vitória"], ["217", "Partidas representadas"], ["122", "Vitórias"], ["95", "Derrotas"]]}, {"x": 279.8, "y": 282.5, "title": "Liquid", "rows": [["56,0%", "Taxa de vitória"], ["191", "Partidas representadas"], ["107", "Vitórias"], ["84", "Derrotas"]]}, {"x": 382.3, "y": 283.1, "title": "Eternal Fire", "rows": [["56,0%", "Taxa de vitória"], ["277", "Partidas representadas"], ["155", "Vitórias"], ["122", "Derrotas"]]}, {"x": 437.2, "y": 285.2, "title": "Alliance", "rows": [["55,7%", "Taxa de vitória"], ["323", "Partidas representadas"], ["180", "Vitórias"], ["143", "Derrotas"]]}, {"x": 391.9, "y": 287.9, "title": "Sangal", "rows": [["55,4%", "Taxa de vitória"], ["285", "Partidas representadas"], ["158", "Vitórias"], ["127", "Derrotas"]]}, {"x": 316.7, "y": 288.2, "title": "OG", "rows": [["55,4%", "Taxa de vitória"], ["222", "Partidas representadas"], ["123", "Vitórias"], ["99", "Derrotas"]]}, {"x": 365.6, "y": 290.8, "title": "fnatic", "rows": [["55,1%", "Taxa de vitória"], ["263", "Partidas representadas"], ["145", "Vitórias"], ["118", "Derrotas"]]}, {"x": 521.8, "y": 291.3, "title": "SINNERS", "rows": [["55,1%", "Taxa de vitória"], ["394", "Partidas representadas"], ["217", "Vitórias"], ["177", "Derrotas"]]}, {"x": 357.3, "y": 291.3, "title": "3DMAX", "rows": [["55,1%", "Taxa de vitória"], ["256", "Partidas representadas"], ["141", "Vitórias"], ["115", "Derrotas"]]}, {"x": 446.7, "y": 295.0, "title": "ECLOT", "rows": [["54,7%", "Taxa de vitória"], ["331", "Partidas representadas"], ["181", "Vitórias"], ["150", "Derrotas"]]}, {"x": 350.1, "y": 297.6, "title": "BIG", "rows": [["54,4%", "Taxa de vitória"], ["250", "Partidas representadas"], ["136", "Vitórias"], ["114", "Derrotas"]]}, {"x": 258.3, "y": 298.1, "title": "Chinggis Warriors", "rows": [["54,3%", "Taxa de vitória"], ["173", "Partidas representadas"], ["94", "Vitórias"], ["79", "Derrotas"]]}, {"x": 440.8, "y": 298.6, "title": "Passion UA", "rows": [["54,3%", "Taxa de vitória"], ["326", "Partidas representadas"], ["177", "Vitórias"], ["149", "Derrotas"]]}, {"x": 388.3, "y": 298.9, "title": "GUN5", "rows": [["54,3%", "Taxa de vitória"], ["282", "Partidas representadas"], ["153", "Vitórias"], ["129", "Derrotas"]]}, {"x": 140.2, "y": 300.8, "title": "PERA", "rows": [["54,0%", "Taxa de vitória"], ["74", "Partidas representadas"], ["40", "Vitórias"], ["34", "Derrotas"]]}, {"x": 513.5, "y": 301.2, "title": "Zero Tenacity", "rows": [["54,0%", "Taxa de vitória"], ["387", "Partidas representadas"], ["209", "Vitórias"], ["178", "Derrotas"]]}, {"x": 426.4, "y": 305.9, "title": "CYBERSHOKE", "rows": [["53,5%", "Taxa de vitória"], ["314", "Partidas representadas"], ["168", "Vitórias"], ["146", "Derrotas"]]}, {"x": 474.1, "y": 306.9, "title": "9INE", "rows": [["53,4%", "Taxa de vitória"], ["354", "Partidas representadas"], ["189", "Vitórias"], ["165", "Derrotas"]]}, {"x": 307.2, "y": 308.0, "title": "AMKAL", "rows": [["53,3%", "Taxa de vitória"], ["214", "Partidas representadas"], ["114", "Vitórias"], ["100", "Derrotas"]]}, {"x": 179.6, "y": 308.0, "title": "Into the Breach", "rows": [["53,3%", "Taxa de vitória"], ["107", "Partidas representadas"], ["57", "Vitórias"], ["50", "Derrotas"]]}, {"x": 209.4, "y": 310.3, "title": "Complexity", "rows": [["53,0%", "Taxa de vitória"], ["132", "Partidas representadas"], ["70", "Vitórias"], ["62", "Derrotas"]]}, {"x": 151.0, "y": 310.4, "title": "Apeks", "rows": [["53,0%", "Taxa de vitória"], ["83", "Partidas representadas"], ["44", "Vitórias"], ["39", "Derrotas"]]}, {"x": 352.5, "y": 312.6, "title": "500", "rows": [["52,8%", "Taxa de vitória"], ["252", "Partidas representadas"], ["133", "Vitórias"], ["119", "Derrotas"]]}, {"x": 233.3, "y": 314.0, "title": "Gaimin Gladiators", "rows": [["52,6%", "Taxa de vitória"], ["152", "Partidas representadas"], ["80", "Vitórias"], ["72", "Derrotas"]]}, {"x": 353.7, "y": 314.5, "title": "ENCE", "rows": [["52,6%", "Taxa de vitória"], ["253", "Partidas representadas"], ["133", "Vitórias"], ["120", "Derrotas"]]}, {"x": 253.5, "y": 319.2, "title": "Virtus.pro", "rows": [["52,1%", "Taxa de vitória"], ["169", "Partidas representadas"], ["88", "Vitórias"], ["81", "Derrotas"]]}, {"x": 263.1, "y": 320.0, "title": "Falcons", "rows": [["52,0%", "Taxa de vitória"], ["177", "Partidas representadas"], ["92", "Vitórias"], ["85", "Derrotas"]]}, {"x": 304.8, "y": 320.8, "title": "GamerLegion", "rows": [["51,9%", "Taxa de vitória"], ["212", "Partidas representadas"], ["110", "Vitórias"], ["102", "Derrotas"]]}, {"x": 125.9, "y": 323.4, "title": "Guild Eagles", "rows": [["51,6%", "Taxa de vitória"], ["62", "Partidas representadas"], ["32", "Vitórias"], ["30", "Derrotas"]]}, {"x": 276.2, "y": 323.5, "title": "Astralis", "rows": [["51,6%", "Taxa de vitória"], ["188", "Partidas representadas"], ["97", "Vitórias"], ["91", "Derrotas"]]}, {"x": 475.3, "y": 324.0, "title": "Sashi", "rows": [["51,5%", "Taxa de vitória"], ["355", "Partidas representadas"], ["183", "Vitórias"], ["172", "Derrotas"]]}, {"x": 240.4, "y": 326.6, "title": "JiJieHao", "rows": [["51,3%", "Taxa de vitória"], ["158", "Partidas representadas"], ["81", "Vitórias"], ["77", "Derrotas"]]}, {"x": 257.1, "y": 327.6, "title": "BC.Game", "rows": [["51,2%", "Taxa de vitória"], ["172", "Partidas representadas"], ["88", "Vitórias"], ["84", "Derrotas"]]}, {"x": 437.2, "y": 331.2, "title": "EYEBALLERS", "rows": [["50,8%", "Taxa de vitória"], ["323", "Partidas representadas"], ["164", "Vitórias"], ["159", "Derrotas"]]}, {"x": 143.8, "y": 332.3, "title": "Inner Circle", "rows": [["50,6%", "Taxa de vitória"], ["77", "Partidas representadas"], ["39", "Vitórias"], ["38", "Derrotas"]]}, {"x": 309.6, "y": 338.3, "title": "Ninjas in Pyjamas", "rows": [["50,0%", "Taxa de vitória"], ["216", "Partidas representadas"], ["108", "Vitórias"], ["108", "Derrotas"]]}, {"x": 165.3, "y": 353.0, "title": "KOI", "rows": [["48,4%", "Taxa de vitória"], ["95", "Partidas representadas"], ["46", "Vitórias"], ["49", "Derrotas"]]}, {"x": 114.0, "y": 356.1, "title": "GODSENT", "rows": [["48,1%", "Taxa de vitória"], ["52", "Partidas representadas"], ["25", "Vitórias"], ["27", "Derrotas"]]}, {"x": 141.4, "y": 356.9, "title": "Sprout", "rows": [["48,0%", "Taxa de vitória"], ["75", "Partidas representadas"], ["36", "Vitórias"], ["39", "Derrotas"]]}, {"x": 260.7, "y": 362.1, "title": "Rebels", "rows": [["47,4%", "Taxa de vitória"], ["175", "Partidas representadas"], ["83", "Vitórias"], ["92", "Derrotas"]]}, {"x": 241.6, "y": 376.2, "title": "Preasy", "rows": [["45,9%", "Taxa de vitória"], ["159", "Partidas representadas"], ["73", "Vitórias"], ["86", "Derrotas"]]}, {"x": 199.9, "y": 383.2, "title": "Anonymo", "rows": [["45,2%", "Taxa de vitória"], ["124", "Partidas representadas"], ["56", "Vitórias"], ["68", "Derrotas"]]}, {"x": 474.1, "y": 409.0, "title": "Nexus", "rows": [["42,4%", "Taxa de vitória"], ["354", "Partidas representadas"], ["150", "Vitórias"], ["204", "Derrotas"]]}, {"x": 204.6, "y": 439.7, "title": "HAVU", "rows": [["39,1%", "Taxa de vitória"], ["128", "Partidas representadas"], ["50", "Vitórias"], ["78", "Derrotas"]]}], "radius": 34}</script>
+</div></figure>
+  </div>
+</section>
+
+<section class="block" id="tempo-contexto">
+  <h2>Tempo e contexto</h2>
+  <p class="lead">Evolução mensal por ambiente e o efeito do contexto sobre o equilíbrio das partidas.</p>
+  <div class="cards">
+    <figure class="card span12"><figcaption><h3>Composição mensal por ambiente</h3><p class="note">Áreas empilhadas: a faixa superior soma LAN + online. LAN e online descrevem o ambiente da partida.</p></figcaption><div class="legend"><span class="key"><span class="key-rect" style="background:var(--s1)"></span>LAN (faixa inferior)</span><span class="key"><span class="key-rect" style="background:var(--s2)"></span>Online (faixa superior, empilhada)</span></div><div class="chart" data-xh-chart>
+<svg viewBox="0 0 1120 300" role="img" aria-label="Composição mensal de partidas por ambiente, LAN e online">
+<line x1="56" x2="1100" y1="264.0" y2="264.0" class="grid"/><text x="48" y="268.0" class="tick" text-anchor="end">0</text><line x1="56" x2="1100" y1="202.0" y2="202.0" class="grid"/><text x="48" y="206.0" class="tick" text-anchor="end">200</text><line x1="56" x2="1100" y1="140.0" y2="140.0" class="grid"/><text x="48" y="144.0" class="tick" text-anchor="end">400</text><line x1="56" x2="1100" y1="78.0" y2="78.0" class="grid"/><text x="48" y="82.0" class="tick" text-anchor="end">600</text><line x1="56" x2="1100" y1="16.0" y2="16.0" class="grid"/><text x="48" y="20.0" class="tick" text-anchor="end">800</text>
+<path d="M56.0,259.4 L90.8,251.3 L125.6,238.6 L160.4,246.3 L195.2,249.1 L230.0,225.2 L264.8,230.5 L299.6,234.9 L334.4,234.5 L369.2,236.1 L404.0,244.8 L438.8,231.1 L473.6,231.8 L508.4,230.5 L543.2,211.6 L578.0,238.9 L612.8,246.6 L647.6,239.5 L682.4,226.2 L717.2,228.0 L752.0,223.7 L786.8,220.0 L821.6,230.8 L856.4,239.8 L891.2,192.7 L926.0,204.8 L960.8,174.4 L995.6,226.2 L1030.4,205.7 L1065.2,195.2 L1100.0,219.0 L1100.0,264.0 L56.0,264.0 Z" fill="var(--s1)" opacity="0.12"/>
+<path d="M56.0,254.1 L90.8,118.0 L125.6,123.0 L160.4,198.0 L195.2,125.1 L230.0,138.4 L264.8,134.4 L299.6,76.1 L334.4,75.5 L369.2,127.6 L404.0,115.5 L438.8,43.3 L473.6,70.9 L508.4,114.0 L543.2,152.7 L578.0,190.5 L612.8,163.9 L647.6,92.3 L682.4,48.5 L717.2,100.3 L752.0,96.3 L786.8,161.1 L821.6,162.3 L856.4,92.3 L891.2,78.3 L926.0,91.0 L960.8,92.3 L995.6,192.4 L1030.4,157.0 L1065.2,103.7 L1100.0,146.5 L1100.0,219.0 L1100.0,219.0 L1065.2,195.2 L1030.4,205.7 L995.6,226.2 L960.8,174.4 L926.0,204.8 L891.2,192.7 L856.4,239.8 L821.6,230.8 L786.8,220.0 L752.0,223.7 L717.2,228.0 L682.4,226.2 L647.6,239.5 L612.8,246.6 L578.0,238.9 L543.2,211.6 L508.4,230.5 L473.6,231.8 L438.8,231.1 L404.0,244.8 L369.2,236.1 L334.4,234.5 L299.6,234.9 L264.8,230.5 L230.0,225.2 L195.2,249.1 L160.4,246.3 L125.6,238.6 L90.8,251.3 L56.0,259.4 Z" fill="var(--s2)" opacity="0.12"/>
+<path d="M56.0,259.4 L90.8,251.3 L125.6,238.6 L160.4,246.3 L195.2,249.1 L230.0,225.2 L264.8,230.5 L299.6,234.9 L334.4,234.5 L369.2,236.1 L404.0,244.8 L438.8,231.1 L473.6,231.8 L508.4,230.5 L543.2,211.6 L578.0,238.9 L612.8,246.6 L647.6,239.5 L682.4,226.2 L717.2,228.0 L752.0,223.7 L786.8,220.0 L821.6,230.8 L856.4,239.8 L891.2,192.7 L926.0,204.8 L960.8,174.4 L995.6,226.2 L1030.4,205.7 L1065.2,195.2 L1100.0,219.0" fill="none" stroke="var(--s1)" stroke-width="2" stroke-linejoin="round"/>
+<path d="M56.0,254.1 L90.8,118.0 L125.6,123.0 L160.4,198.0 L195.2,125.1 L230.0,138.4 L264.8,134.4 L299.6,76.1 L334.4,75.5 L369.2,127.6 L404.0,115.5 L438.8,43.3 L473.6,70.9 L508.4,114.0 L543.2,152.7 L578.0,190.5 L612.8,163.9 L647.6,92.3 L682.4,48.5 L717.2,100.3 L752.0,96.3 L786.8,161.1 L821.6,162.3 L856.4,92.3 L891.2,78.3 L926.0,91.0 L960.8,92.3 L995.6,192.4 L1030.4,157.0 L1065.2,103.7 L1100.0,146.5" fill="none" stroke="var(--s2)" stroke-width="2" stroke-linejoin="round"/>
+<text x="56.0" y="288" class="tick" text-anchor="middle">2023-09</text><text x="160.4" y="288" class="tick" text-anchor="middle">2023-12</text><text x="264.8" y="288" class="tick" text-anchor="middle">2024-03</text><text x="369.2" y="288" class="tick" text-anchor="middle">2024-06</text><text x="473.6" y="288" class="tick" text-anchor="middle">2024-09</text><text x="578.0" y="288" class="tick" text-anchor="middle">2024-12</text><text x="682.4" y="288" class="tick" text-anchor="middle">2025-03</text><text x="786.8" y="288" class="tick" text-anchor="middle">2025-06</text><text x="891.2" y="288" class="tick" text-anchor="middle">2025-09</text><text x="995.6" y="288" class="tick" text-anchor="middle">2025-12</text><text x="1100.0" y="288" class="tick" text-anchor="end">2026-03</text>
+<line x1="56" x2="1100" y1="264" y2="264" class="axis"/>
+<line class="xh-line" x1="0" x2="0" y1="16" y2="264"/>
+<g class="xh-dots"><circle class="xh-dot" r="4.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/>
+<circle class="xh-dot" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/>
+<circle class="xh-dot" r="0" fill="none"/></g>
+</svg>
+<script type="application/json" data-xh>{"xs": [56.0, 90.8, 125.6, 160.4, 195.2, 230.0, 264.8, 299.6, 334.4, 369.2, 404.0, 438.8, 473.6, 508.4, 543.2, 578.0, 612.8, 647.6, 682.4, 717.2, 752.0, 786.8, 821.6, 856.4, 891.2, 926.0, 960.8, 995.6, 1030.4, 1065.2, 1100.0], "labels": ["2023-09", "2023-10", "2023-11", "2023-12", "2024-01", "2024-02", "2024-03", "2024-04", "2024-05", "2024-06", "2024-07", "2024-08", "2024-09", "2024-10", "2024-11", "2024-12", "2025-01", "2025-02", "2025-03", "2025-04", "2025-05", "2025-06", "2025-07", "2025-08", "2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "2026-03"], "series": [{"name": "LAN", "color": "var(--s1)", "values": ["15", "41", "82", "57", "48", "125", "108", "94", "95", "90", "62", "106", "104", "108", "169", "81", "56", "79", "122", "116", "130", "142", "107", "78", "230", "191", "289", "122", "188", "222", "145"], "ys": [259.4, 251.3, 238.6, 246.3, 249.1, 225.2, 230.5, 234.9, 234.5, 236.1, 244.8, 231.1, 231.8, 230.5, 211.6, 238.9, 246.6, 239.5, 226.2, 228.0, 223.7, 220.0, 230.8, 239.8, 192.7, 204.8, 174.4, 226.2, 205.7, 195.2, 219.0]}, {"name": "Online", "color": "var(--s2)", "values": ["17", "430", "373", "156", "400", "280", "310", "512", "513", "350", "417", "606", "519", "376", "190", "156", "267", "475", "573", "412", "411", "190", "221", "476", "369", "367", "265", "109", "157", "295", "234"], "ys": [254.1, 118.0, 123.0, 198.0, 125.1, 138.4, 134.4, 76.1, 75.5, 127.6, 115.5, 43.3, 70.9, 114.0, 152.7, 190.5, 163.9, 92.3, 48.5, 100.3, 96.3, 161.1, 162.3, 92.3, 78.3, 91.0, 92.3, 192.4, 157.0, 103.7, 146.5]}, {"name": "Total", "color": "var(--muted)", "values": ["32", "471", "455", "213", "448", "405", "418", "606", "608", "440", "479", "712", "623", "484", "359", "237", "323", "554", "695", "528", "541", "332", "328", "554", "599", "558", "554", "231", "345", "517", "379"], "ys": [254.1, 118.0, 123.0, 198.0, 125.1, 138.4, 134.4, 76.1, 75.5, 127.6, 115.5, 43.3, 70.9, 114.0, 152.7, 190.5, 163.9, 92.3, 48.5, 100.3, 96.3, 161.1, 162.3, 92.3, 78.3, 91.0, 92.3, 192.4, 157.0, 103.7, 146.5]}]}</script>
+</div><details class="table-view"><summary>Ver dados em tabela</summary><div class="table-scroll"><table><thead><tr><th scope="col">Mês</th><th scope="col">LAN</th><th scope="col">Online</th><th scope="col">Total</th></tr></thead><tbody>
+<tr><td>2023-09</td><td>15</td><td>17</td><td>32</td></tr>
+<tr><td>2023-10</td><td>41</td><td>430</td><td>471</td></tr>
+<tr><td>2023-11</td><td>82</td><td>373</td><td>455</td></tr>
+<tr><td>2023-12</td><td>57</td><td>156</td><td>213</td></tr>
+<tr><td>2024-01</td><td>48</td><td>400</td><td>448</td></tr>
+<tr><td>2024-02</td><td>125</td><td>280</td><td>405</td></tr>
+<tr><td>2024-03</td><td>108</td><td>310</td><td>418</td></tr>
+<tr><td>2024-04</td><td>94</td><td>512</td><td>606</td></tr>
+<tr><td>2024-05</td><td>95</td><td>513</td><td>608</td></tr>
+<tr><td>2024-06</td><td>90</td><td>350</td><td>440</td></tr>
+<tr><td>2024-07</td><td>62</td><td>417</td><td>479</td></tr>
+<tr><td>2024-08</td><td>106</td><td>606</td><td>712</td></tr>
+<tr><td>2024-09</td><td>104</td><td>519</td><td>623</td></tr>
+<tr><td>2024-10</td><td>108</td><td>376</td><td>484</td></tr>
+<tr><td>2024-11</td><td>169</td><td>190</td><td>359</td></tr>
+<tr><td>2024-12</td><td>81</td><td>156</td><td>237</td></tr>
+<tr><td>2025-01</td><td>56</td><td>267</td><td>323</td></tr>
+<tr><td>2025-02</td><td>79</td><td>475</td><td>554</td></tr>
+<tr><td>2025-03</td><td>122</td><td>573</td><td>695</td></tr>
+<tr><td>2025-04</td><td>116</td><td>412</td><td>528</td></tr>
+<tr><td>2025-05</td><td>130</td><td>411</td><td>541</td></tr>
+<tr><td>2025-06</td><td>142</td><td>190</td><td>332</td></tr>
+<tr><td>2025-07</td><td>107</td><td>221</td><td>328</td></tr>
+<tr><td>2025-08</td><td>78</td><td>476</td><td>554</td></tr>
+<tr><td>2025-09</td><td>230</td><td>369</td><td>599</td></tr>
+<tr><td>2025-10</td><td>191</td><td>367</td><td>558</td></tr>
+<tr><td>2025-11</td><td>289</td><td>265</td><td>554</td></tr>
+<tr><td>2025-12</td><td>122</td><td>109</td><td>231</td></tr>
+<tr><td>2026-01</td><td>188</td><td>157</td><td>345</td></tr>
+<tr><td>2026-02</td><td>222</td><td>295</td><td>517</td></tr>
+<tr><td>2026-03</td><td>145</td><td>234</td><td>379</td></tr>
+</tbody></table></div></details></figure>
+    <figure class="card span6"><figcaption><h3>Diferença média absoluta de ELO</h3><p class="note">Distância média de força entre as equipes, por ambiente.</p></figcaption><div class="chart"><svg viewBox="0 0 545 240" role="img" aria-label="Diferença média absoluta de ELO por ambiente"><line x1="52" x2="529" y1="206.0" y2="206.0" class="grid"/><text x="44" y="210.0" class="tick" text-anchor="end">0</text><line x1="52" x2="529" y1="168.4" y2="168.4" class="grid"/><text x="44" y="172.4" class="tick" text-anchor="end">25</text><line x1="52" x2="529" y1="130.8" y2="130.8" class="grid"/><text x="44" y="134.8" class="tick" text-anchor="end">50</text><line x1="52" x2="529" y1="93.2" y2="93.2" class="grid"/><text x="44" y="97.2" class="tick" text-anchor="end">75</text><line x1="52" x2="529" y1="55.6" y2="55.6" class="grid"/><text x="44" y="59.6" class="tick" text-anchor="end">100</text><line x1="52" x2="529" y1="18.0" y2="18.0" class="grid"/><text x="44" y="22.0" class="tick" text-anchor="end">125</text><path d="M159.2,206.0 L159.2,65.8 Q159.2,61.8 163.2,61.8 L179.2,61.8 Q183.2,61.8 183.2,65.8 L183.2,206.0 Z" fill="var(--s1)" class="mark" data-tip-title="LAN" data-tip-rows="95,8::Diferença média absoluta de ELO" data-tip-key="var(--s1)" tabindex="0"/><text x="171.2" y="54.8" class="val" text-anchor="middle" pointer-events="none">95,8</text><text x="171.2" y="228" class="cat" text-anchor="middle">LAN</text><path d="M397.8,206.0 L397.8,93.9 Q397.8,89.9 401.8,89.9 L417.8,89.9 Q421.8,89.9 421.8,93.9 L421.8,206.0 Z" fill="var(--s1)" class="mark" data-tip-title="ONLINE" data-tip-rows="77,2::Diferença média absoluta de ELO" data-tip-key="var(--s1)" tabindex="0"/><text x="409.8" y="82.9" class="val" text-anchor="middle" pointer-events="none">77,2</text><text x="409.8" y="228" class="cat" text-anchor="middle">ONLINE</text><line x1="52" x2="529" y1="206" y2="206" class="axis"/></svg></div><details class="table-view"><summary>Ver dados em tabela</summary><div class="table-scroll"><table><thead><tr><th scope="col">Ambiente</th><th scope="col">Partidas</th><th scope="col">Diferença média de ELO</th></tr></thead><tbody>
+<tr><td>LAN</td><td>1.766</td><td>95,8</td></tr>
+<tr><td>ONLINE</td><td>1.074</td><td>77,2</td></tr>
+</tbody></table></div></details></figure>
+    <figure class="card span6"><figcaption><h3>Vitória da equipe com maior ELO</h3><p class="note">Frequência com que o favorito pré-jogo confirma, por ambiente.</p></figcaption><div class="chart"><svg viewBox="0 0 545 240" role="img" aria-label="Taxa de vitória da equipe com maior ELO por ambiente"><line x1="52" x2="529" y1="206.0" y2="206.0" class="grid"/><text x="44" y="210.0" class="tick" text-anchor="end">0</text><line x1="52" x2="529" y1="159.0" y2="159.0" class="grid"/><text x="44" y="163.0" class="tick" text-anchor="end">20</text><line x1="52" x2="529" y1="112.0" y2="112.0" class="grid"/><text x="44" y="116.0" class="tick" text-anchor="end">40</text><line x1="52" x2="529" y1="65.0" y2="65.0" class="grid"/><text x="44" y="69.0" class="tick" text-anchor="end">60</text><line x1="52" x2="529" y1="18.0" y2="18.0" class="grid"/><text x="44" y="22.0" class="tick" text-anchor="end">80</text><path d="M159.2,206.0 L159.2,65.6 Q159.2,61.6 163.2,61.6 L179.2,61.6 Q183.2,61.6 183.2,65.6 L183.2,206.0 Z" fill="var(--s1)" class="mark" data-tip-title="LAN" data-tip-rows="61,4%::Vitória da equipe com maior ELO" data-tip-key="var(--s1)" tabindex="0"/><text x="171.2" y="54.6" class="val" text-anchor="middle" pointer-events="none">61,4%</text><text x="171.2" y="228" class="cat" text-anchor="middle">LAN</text><path d="M397.8,206.0 L397.8,73.0 Q397.8,69.0 401.8,69.0 L417.8,69.0 Q421.8,69.0 421.8,73.0 L421.8,206.0 Z" fill="var(--s1)" class="mark" data-tip-title="ONLINE" data-tip-rows="58,3%::Vitória da equipe com maior ELO" data-tip-key="var(--s1)" tabindex="0"/><text x="409.8" y="62.0" class="val" text-anchor="middle" pointer-events="none">58,3%</text><text x="409.8" y="228" class="cat" text-anchor="middle">ONLINE</text><line x1="52" x2="529" y1="88.5" y2="88.5" class="refline"/><text x="529" y="83.5" class="anno" text-anchor="end">50%</text><line x1="52" x2="529" y1="206" y2="206" class="axis"/></svg></div><details class="table-view"><summary>Ver dados em tabela</summary><div class="table-scroll"><table><thead><tr><th scope="col">Ambiente</th><th scope="col">Partidas</th><th scope="col">Vitória do maior ELO</th></tr></thead><tbody>
+<tr><td>LAN</td><td>1.766</td><td>61,4%</td></tr>
+<tr><td>ONLINE</td><td>1.074</td><td>58,3%</td></tr>
+</tbody></table></div></details></figure>
+  </div>
+</section>
+
+<section class="block" id="elo">
+  <h2>ELO e recortes</h2>
+  <p class="lead">Análise descritiva da base de modelagem; associação não implica causalidade.</p>
+  <div class="cards">
+    <figure class="card span6"><figcaption><h3>Vantagem de ELO e resultado</h3><p class="note">Rampa ordinal: quanto maior a diferença de ELO pré-jogo, maior a taxa de vitória do favorito.</p></figcaption><div class="chart"><svg viewBox="0 0 545 260" role="img" aria-label="Taxa de vitória da equipe de maior ELO por faixa de diferença"><line x1="52" x2="529" y1="212.0" y2="212.0" class="grid"/><text x="44" y="216.0" class="tick" text-anchor="end">0%</text><line x1="52" x2="529" y1="163.5" y2="163.5" class="grid"/><text x="44" y="167.5" class="tick" text-anchor="end">25%</text><line x1="52" x2="529" y1="115.0" y2="115.0" class="grid"/><text x="44" y="119.0" class="tick" text-anchor="end">50%</text><line x1="52" x2="529" y1="66.5" y2="66.5" class="grid"/><text x="44" y="70.5" class="tick" text-anchor="end">75%</text><line x1="52" x2="529" y1="18.0" y2="18.0" class="grid"/><text x="44" y="22.0" class="tick" text-anchor="end">100%</text><path d="M99.6,212.0 L99.6,109.4 Q99.6,105.4 103.6,105.4 L119.6,105.4 Q123.6,105.4 123.6,109.4 L123.6,212.0 Z" fill="var(--r1)" class="mark" data-tip-title="Diferença de ELO 0-49" data-tip-rows="55,0%::Vitória do maior ELO;;997::Partidas;;24,7::Diferença média" data-tip-key="var(--r1)" tabindex="0"/><text x="111.6" y="98.4" class="val" text-anchor="middle" pointer-events="none">55,0%</text><text x="111.6" y="234" class="cat" text-anchor="middle">0-49</text><text x="111.6" y="249" class="tick" text-anchor="middle">n=997</text><path d="M218.9,212.0 L218.9,106.8 Q218.9,102.8 222.9,102.8 L238.9,102.8 Q242.9,102.8 242.9,106.8 L242.9,212.0 Z" fill="var(--r2)" class="mark" data-tip-title="Diferença de ELO 50-99" data-tip-rows="56,3%::Vitória do maior ELO;;842::Partidas;;72,5::Diferença média" data-tip-key="var(--r2)" tabindex="0"/><text x="230.9" y="95.8" class="val" text-anchor="middle" pointer-events="none">56,3%</text><text x="230.9" y="234" class="cat" text-anchor="middle">50-99</text><text x="230.9" y="249" class="tick" text-anchor="middle">n=842</text><path d="M338.1,212.0 L338.1,89.2 Q338.1,85.2 342.1,85.2 L358.1,85.2 Q362.1,85.2 362.1,89.2 L362.1,212.0 Z" fill="var(--r3)" class="mark" data-tip-title="Diferença de ELO 100-199" data-tip-rows="65,4%::Vitória do maior ELO;;771::Partidas;;139,9::Diferença média" data-tip-key="var(--r3)" tabindex="0"/><text x="350.1" y="78.2" class="val" text-anchor="middle" pointer-events="none">65,4%</text><text x="350.1" y="234" class="cat" text-anchor="middle">100-199</text><text x="350.1" y="249" class="tick" text-anchor="middle">n=771</text><path d="M457.4,212.0 L457.4,60.0 Q457.4,56.0 461.4,56.0 L477.4,56.0 Q481.4,56.0 481.4,60.0 L481.4,212.0 Z" fill="var(--r4)" class="mark" data-tip-title="Diferença de ELO 200+" data-tip-rows="80,4%::Vitória do maior ELO;;230::Partidas;;255,0::Diferença média" data-tip-key="var(--r4)" tabindex="0"/><text x="469.4" y="49.0" class="val" text-anchor="middle" pointer-events="none">80,4%</text><text x="469.4" y="234" class="cat" text-anchor="middle">200+</text><text x="469.4" y="249" class="tick" text-anchor="middle">n=230</text><line x1="52" x2="529" y1="115.0" y2="115.0" class="refline"/><text x="529" y="110.0" class="anno" text-anchor="end">50%</text><line x1="52" x2="529" y1="212" y2="212" class="axis"/></svg></div><details class="table-view"><summary>Ver dados em tabela</summary><div class="table-scroll"><table><thead><tr><th scope="col">Faixa de diferença de ELO</th><th scope="col">Partidas</th><th scope="col">Vitória do maior ELO</th></tr></thead><tbody>
+<tr><td>0-49</td><td>997</td><td>55,0%</td></tr>
+<tr><td>50-99</td><td>842</td><td>56,3%</td></tr>
+<tr><td>100-199</td><td>771</td><td>65,4%</td></tr>
+<tr><td>200+</td><td>230</td><td>80,4%</td></tr>
+</tbody></table></div></details></figure>
+    <figure class="card span6"><figcaption><h3>Perfil de treino e holdout</h3><p class="note">Medidas de escalas diferentes ficam em painéis separados (small multiples), nunca no mesmo eixo.</p></figcaption><div class="chart"><svg viewBox="0 0 545 240" role="img" aria-label="Perfil comparado dos recortes de treino e holdout"><text x="44.0" y="18" class="panel-title">Diferença média de ELO</text><line x1="44.0" x2="252.5" y1="210.0" y2="210.0" class="grid"/><text x="38.0" y="214.0" class="tick" text-anchor="end">0</text><line x1="44.0" x2="252.5" y1="151.3" y2="151.3" class="grid"/><text x="38.0" y="155.3" class="tick" text-anchor="end">50</text><line x1="44.0" x2="252.5" y1="92.7" y2="92.7" class="grid"/><text x="38.0" y="96.7" class="tick" text-anchor="end">100</text><line x1="44.0" x2="252.5" y1="34.0" y2="34.0" class="grid"/><text x="38.0" y="38.0" class="tick" text-anchor="end">150</text><path d="M84.1,210.0 L84.1,112.0 Q84.1,108.0 88.1,108.0 L104.1,108.0 Q108.1,108.0 108.1,112.0 L108.1,210.0 Z" fill="var(--s1)" class="mark" data-tip-title="Treino" data-tip-rows="86,9::Diferença média de ELO" data-tip-key="var(--s1)" tabindex="0"/><text x="96.1" y="101.0" class="val" text-anchor="middle" pointer-events="none">86,9</text><text x="96.1" y="230" class="cat" text-anchor="middle">Treino</text><path d="M188.4,210.0 L188.4,90.8 Q188.4,86.8 192.4,86.8 L208.4,86.8 Q212.4,86.8 212.4,90.8 L212.4,210.0 Z" fill="var(--s1)" class="mark" data-tip-title="Holdout" data-tip-rows="105,0::Diferença média de ELO" data-tip-key="var(--s1)" tabindex="0"/><text x="200.4" y="79.8" class="val" text-anchor="middle" pointer-events="none">105,0</text><text x="200.4" y="230" class="cat" text-anchor="middle">Holdout</text><line x1="44.0" x2="252.5" y1="210" y2="210" class="axis"/><text x="328.5" y="18" class="panel-title">Partidas em LAN (%)</text><line x1="328.5" x2="537.0" y1="210.0" y2="210.0" class="grid"/><text x="322.5" y="214.0" class="tick" text-anchor="end">0</text><line x1="328.5" x2="537.0" y1="166.0" y2="166.0" class="grid"/><text x="322.5" y="170.0" class="tick" text-anchor="end">20</text><line x1="328.5" x2="537.0" y1="122.0" y2="122.0" class="grid"/><text x="322.5" y="126.0" class="tick" text-anchor="end">40</text><line x1="328.5" x2="537.0" y1="78.0" y2="78.0" class="grid"/><text x="322.5" y="82.0" class="tick" text-anchor="end">60</text><line x1="328.5" x2="537.0" y1="34.0" y2="34.0" class="grid"/><text x="322.5" y="38.0" class="tick" text-anchor="end">80</text><path d="M368.6,210.0 L368.6,76.3 Q368.6,72.3 372.6,72.3 L388.6,72.3 Q392.6,72.3 392.6,76.3 L392.6,210.0 Z" fill="var(--s1)" class="mark" data-tip-title="Treino" data-tip-rows="62,6%::Partidas em LAN (%)" data-tip-key="var(--s1)" tabindex="0"/><text x="380.6" y="65.3" class="val" text-anchor="middle" pointer-events="none">62,6%</text><text x="380.6" y="230" class="cat" text-anchor="middle">Treino</text><path d="M472.9,210.0 L472.9,84.6 Q472.9,80.6 476.9,80.6 L492.9,80.6 Q496.9,80.6 496.9,84.6 L496.9,210.0 Z" fill="var(--s1)" class="mark" data-tip-title="Holdout" data-tip-rows="58,8%::Partidas em LAN (%)" data-tip-key="var(--s1)" tabindex="0"/><text x="484.9" y="73.6" class="val" text-anchor="middle" pointer-events="none">58,8%</text><text x="484.9" y="230" class="cat" text-anchor="middle">Holdout</text><line x1="328.5" x2="537.0" y1="210" y2="210" class="axis"/></svg></div><details class="table-view"><summary>Ver dados em tabela</summary><div class="table-scroll"><table><thead><tr><th scope="col">Recorte</th><th scope="col">Partidas</th><th scope="col">Diferença média de ELO</th><th scope="col">Partidas em LAN</th></tr></thead><tbody>
+<tr><td>Treino</td><td>2.546</td><td>86,9</td><td>62,6%</td></tr>
+<tr><td>Holdout</td><td>294</td><td>105,0</td><td>58,8%</td></tr>
+</tbody></table></div></details></figure>
+  </div>
+</section>
+
+<section class="block" id="modelo">
+  <h2>Desempenho do modelo</h2>
+  <p class="lead">Resultado principal no holdout de 294 partidas; recortes de contexto servem para diagnóstico descritivo.</p>
+  <div class="kpis" style="padding:0;margin:0 0 16px"><div class="kpi"><span class="kpi-value">294</span><span class="kpi-label">Partidas no holdout</span><span class="kpi-note">modelo congelado</span></div><div class="kpi"><span class="kpi-value">0,6828</span><span class="kpi-label">ROC-AUC</span><span class="kpi-note">calculado do holdout</span></div><div class="kpi"><span class="kpi-value">62,93%</span><span class="kpi-label">Acurácia</span><span class="kpi-note">classe prevista × real</span></div><div class="kpi"><span class="kpi-value">4</span><span class="kpi-label">Erros com confiança ≥ 80%</span><span class="kpi-note">de 294 previsões</span></div></div>
+  <div class="cards">
+    <figure class="card span6"><figcaption><h3>Acurácia e volume por mês</h3><p class="note">Dois painéis com o mesmo eixo de meses — sem eixo duplo, que induz correlações artificiais.</p></figcaption><div class="chart"><svg viewBox="0 0 545 300" role="img" aria-label="Acurácia mensal do modelo e volume de partidas avaliadas, em dois painéis empilhados"><text x="52" y="14" class="panel-title">Acurácia no mês (%)</text><line x1="52" x2="529" y1="150.0" y2="150.0" class="grid"/><text x="44" y="154.0" class="tick" text-anchor="end">0%</text><line x1="52" x2="529" y1="85.0" y2="85.0" class="refline"/><text x="44" y="89.0" class="tick" text-anchor="end">50%</text><line x1="52" x2="529" y1="20.0" y2="20.0" class="grid"/><text x="44" y="24.0" class="tick" text-anchor="end">100%</text><path d="M131.5,76.8 L290.5,59.9 L449.5,71.3" fill="none" stroke="var(--s1)" stroke-width="2" stroke-linejoin="round"/><circle cx="131.5" cy="76.8" r="4.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="mark" data-tip-title="2026-01" data-tip-rows="56,3%::Acurácia;;71::Partidas" data-tip-key="var(--s1)" tabindex="0"/><text x="131.5" y="65.8" class="val" text-anchor="middle" pointer-events="none">56,3%</text><circle cx="290.5" cy="59.9" r="4.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="mark" data-tip-title="2026-02" data-tip-rows="69,3%::Acurácia;;114::Partidas" data-tip-key="var(--s1)" tabindex="0"/><text x="290.5" y="48.9" class="val" text-anchor="middle" pointer-events="none">69,3%</text><circle cx="449.5" cy="71.3" r="4.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" class="mark" data-tip-title="2026-03" data-tip-rows="60,6%::Acurácia;;109::Partidas" data-tip-key="var(--s1)" tabindex="0"/><text x="449.5" y="60.3" class="val" text-anchor="middle" pointer-events="none">60,6%</text><text x="52" y="178" class="panel-title">Partidas avaliadas</text><path d="M119.5,260.0 L119.5,229.0 Q119.5,225.0 123.5,225.0 L139.5,225.0 Q143.5,225.0 143.5,229.0 L143.5,260.0 Z" fill="var(--s1)" class="mark" data-tip-title="2026-01" data-tip-rows="71::Partidas" data-tip-key="var(--s1)" tabindex="0"/><text x="131.5" y="219.0" class="val" text-anchor="middle" pointer-events="none">71</text><text x="131.5" y="290" class="cat" text-anchor="middle">2026-01</text><path d="M278.5,260.0 L278.5,207.8 Q278.5,203.8 282.5,203.8 L298.5,203.8 Q302.5,203.8 302.5,207.8 L302.5,260.0 Z" fill="var(--s1)" class="mark" data-tip-title="2026-02" data-tip-rows="114::Partidas" data-tip-key="var(--s1)" tabindex="0"/><text x="290.5" y="197.8" class="val" text-anchor="middle" pointer-events="none">114</text><text x="290.5" y="290" class="cat" text-anchor="middle">2026-02</text><path d="M437.5,260.0 L437.5,210.2 Q437.5,206.2 441.5,206.2 L457.5,206.2 Q461.5,206.2 461.5,210.2 L461.5,260.0 Z" fill="var(--s1)" class="mark" data-tip-title="2026-03" data-tip-rows="109::Partidas" data-tip-key="var(--s1)" tabindex="0"/><text x="449.5" y="200.2" class="val" text-anchor="middle" pointer-events="none">109</text><text x="449.5" y="290" class="cat" text-anchor="middle">2026-03</text><line x1="52" x2="529" y1="260" y2="260" class="axis"/></svg></div><details class="table-view"><summary>Ver dados em tabela</summary><div class="table-scroll"><table><thead><tr><th scope="col">Mês</th><th scope="col">Partidas</th><th scope="col">Acurácia</th></tr></thead><tbody>
+<tr><td>2026-01</td><td>71</td><td>56,3%</td></tr>
+<tr><td>2026-02</td><td>114</td><td>69,3%</td></tr>
+<tr><td>2026-03</td><td>109</td><td>60,6%</td></tr>
+</tbody></table></div></details></figure>
+    <figure class="card span6"><figcaption><h3>Matriz de confusão</h3><p class="note">Diagonal principal concentra os acertos; intensidade segue o número de partidas.</p></figcaption><div class="chart"><svg viewBox="0 0 545 300" role="img" aria-label="Matriz de confusão do modelo no holdout"><text x="269.0" y="22" class="panel-title" text-anchor="middle">Previsto</text><text x="54" y="175.0" class="panel-title" transform="rotate(-90 54 175.0)" text-anchor="middle">Real</text><text x="209.0" y="44" class="cat" text-anchor="middle">Derrota</text><text x="140" y="119.0" class="cat" text-anchor="end">Derrota</text><text x="329.0" y="44" class="cat" text-anchor="middle">Vitória</text><text x="140" y="239.0" class="cat" text-anchor="end">Vitória</text><rect x="150" y="56" width="118" height="118" rx="4" fill="var(--q5)" class="mark" data-tip-title="Real Derrota × previsto Derrota" data-tip-rows="103::Partidas;;35,0%::Fatia do holdout;;Acerto::Tipo" data-tip-key="var(--q5)" tabindex="0"/><text x="209.0" y="117.0" text-anchor="middle" class="cell-value" style="fill:var(--on-q5)" pointer-events="none">103</text><text x="209.0" y="137.0" text-anchor="middle" class="cell-sub" style="fill:var(--on-q5)" pointer-events="none">35,0%</text><rect x="270" y="56" width="118" height="118" rx="4" fill="var(--q3)" class="mark" data-tip-title="Real Derrota × previsto Vitória" data-tip-rows="51::Partidas;;17,3%::Fatia do holdout;;Erro::Tipo" data-tip-key="var(--q3)" tabindex="0"/><text x="329.0" y="117.0" text-anchor="middle" class="cell-value" style="fill:var(--on-q3)" pointer-events="none">51</text><text x="329.0" y="137.0" text-anchor="middle" class="cell-sub" style="fill:var(--on-q3)" pointer-events="none">17,3%</text><rect x="150" y="176" width="118" height="118" rx="4" fill="var(--q3)" class="mark" data-tip-title="Real Vitória × previsto Derrota" data-tip-rows="58::Partidas;;19,7%::Fatia do holdout;;Erro::Tipo" data-tip-key="var(--q3)" tabindex="0"/><text x="209.0" y="237.0" text-anchor="middle" class="cell-value" style="fill:var(--on-q3)" pointer-events="none">58</text><text x="209.0" y="257.0" text-anchor="middle" class="cell-sub" style="fill:var(--on-q3)" pointer-events="none">19,7%</text><rect x="270" y="176" width="118" height="118" rx="4" fill="var(--q4)" class="mark" data-tip-title="Real Vitória × previsto Vitória" data-tip-rows="82::Partidas;;27,9%::Fatia do holdout;;Acerto::Tipo" data-tip-key="var(--q4)" tabindex="0"/><text x="329.0" y="237.0" text-anchor="middle" class="cell-value" style="fill:var(--on-q4)" pointer-events="none">82</text><text x="329.0" y="257.0" text-anchor="middle" class="cell-sub" style="fill:var(--on-q4)" pointer-events="none">27,9%</text></svg></div><details class="table-view"><summary>Ver dados em tabela</summary><div class="table-scroll"><table><thead><tr><th scope="col"></th><th scope="col">Previsto derrota</th><th scope="col">Previsto vitória</th></tr></thead><tbody>
+<tr><td>Real derrota</td><td>103</td><td>51</td></tr>
+<tr><td>Real vitória</td><td>58</td><td>82</td></tr>
+</tbody></table></div></details></figure>
+    <figure class="card span6"><figcaption><h3>Acurácia por contexto</h3><p class="note">Diagnóstico descritivo do holdout: ambiente e faixa de diferença de ELO. Linha de referência em 50%.</p></figcaption><div class="chart"><svg viewBox="0 0 545 242" role="img" aria-label="Acurácia do modelo por ambiente e por faixa de ELO"><line x1="118.0" x2="118.0" y1="8" y2="212" class="grid"/><text x="118.0" y="232" class="tick" text-anchor="middle">0%</text><line x1="210.8" x2="210.8" y1="8" y2="212" class="grid"/><text x="210.8" y="232" class="tick" text-anchor="middle">25%</text><line x1="303.5" x2="303.5" y1="8" y2="212" class="refline"/><text x="303.5" y="232" class="tick" text-anchor="middle">50%</text><line x1="396.2" x2="396.2" y1="8" y2="212" class="grid"/><text x="396.2" y="232" class="tick" text-anchor="middle">75%</text><line x1="489.0" x2="489.0" y1="8" y2="212" class="grid"/><text x="489.0" y="232" class="tick" text-anchor="middle">100%</text><rect x="0" y="8.0" width="545" height="34" fill="transparent" class="row-hit" data-tip-title="LAN" data-tip-rows="67,6%::Acurácia;;173::Partidas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,17.0 L364.9,17.0 Q368.9,17.0 368.9,21.0 L368.9,29.0 Q368.9,33.0 364.9,33.0 L118.0,33.0 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="29.0" class="cat" text-anchor="end" pointer-events="none">LAN</text><text x="374.9" y="29.0" class="val" pointer-events="none">67,6%</text><rect x="0" y="42.0" width="545" height="34" fill="transparent" class="row-hit" data-tip-title="ONLINE" data-tip-rows="56,2%::Acurácia;;121::Partidas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,51.0 L322.5,51.0 Q326.5,51.0 326.5,55.0 L326.5,63.0 Q326.5,67.0 322.5,67.0 L118.0,67.0 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="63.0" class="cat" text-anchor="end" pointer-events="none">ONLINE</text><text x="332.5" y="63.0" class="val" pointer-events="none">56,2%</text><rect x="0" y="76.0" width="545" height="34" fill="transparent" class="row-hit" data-tip-title="ELO 0-49" data-tip-rows="55,7%::Acurácia;;88::Partidas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,85.0 L320.6,85.0 Q324.6,85.0 324.6,89.0 L324.6,97.0 Q324.6,101.0 320.6,101.0 L118.0,101.0 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="97.0" class="cat" text-anchor="end" pointer-events="none">ELO 0-49</text><text x="330.6" y="97.0" class="val" pointer-events="none">55,7%</text><rect x="0" y="110.0" width="545" height="34" fill="transparent" class="row-hit" data-tip-title="ELO 50-99" data-tip-rows="59,8%::Acurácia;;82::Partidas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,119.0 L335.7,119.0 Q339.7,119.0 339.7,123.0 L339.7,131.0 Q339.7,135.0 335.7,135.0 L118.0,135.0 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="131.0" class="cat" text-anchor="end" pointer-events="none">ELO 50-99</text><text x="345.7" y="131.0" class="val" pointer-events="none">59,8%</text><rect x="0" y="144.0" width="545" height="34" fill="transparent" class="row-hit" data-tip-title="ELO 100-199" data-tip-rows="63,0%::Acurácia;;81::Partidas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,153.0 L347.6,153.0 Q351.6,153.0 351.6,157.0 L351.6,165.0 Q351.6,169.0 347.6,169.0 L118.0,169.0 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="165.0" class="cat" text-anchor="end" pointer-events="none">ELO 100-199</text><text x="357.6" y="165.0" class="val" pointer-events="none">63,0%</text><rect x="0" y="178.0" width="545" height="34" fill="transparent" class="row-hit" data-tip-title="ELO 200+" data-tip-rows="83,7%::Acurácia;;43::Partidas" data-tip-key="var(--s1)" tabindex="0"/><path d="M118.0,187.0 L424.6,187.0 Q428.6,187.0 428.6,191.0 L428.6,199.0 Q428.6,203.0 424.6,203.0 L118.0,203.0 Z" fill="var(--s1)" class="mark" pointer-events="none"/><text x="110" y="199.0" class="cat" text-anchor="end" pointer-events="none">ELO 200+</text><text x="434.6" y="199.0" class="val" pointer-events="none">83,7%</text></svg></div><details class="table-view"><summary>Ver dados em tabela</summary><div class="table-scroll"><table><thead><tr><th scope="col">Recorte</th><th scope="col">Partidas</th><th scope="col">Acurácia</th></tr></thead><tbody>
+<tr><td>LAN</td><td>173</td><td>67,6%</td></tr>
+<tr><td>ONLINE</td><td>121</td><td>56,2%</td></tr>
+<tr><td>ELO 0-49</td><td>88</td><td>55,7%</td></tr>
+<tr><td>ELO 50-99</td><td>82</td><td>59,8%</td></tr>
+<tr><td>ELO 100-199</td><td>81</td><td>63,0%</td></tr>
+<tr><td>ELO 200+</td><td>43</td><td>83,7%</td></tr>
+</tbody></table></div></details></figure>
+    <figure class="card span6"><figcaption><h3>Previsto versus observado</h3><p class="note">Quanto mais próximas as linhas ficam da diagonal, melhor calibrado o modelo.</p></figcaption><div class="legend"><span class="key"><span class="key-line" style="background:var(--s1)"></span>Probabilidade média prevista</span><span class="key"><span class="key-line" style="background:var(--s2)"></span>Vitória observada</span></div><div class="chart" data-xh-chart>
+<svg viewBox="0 0 545 300" role="img" aria-label="Curva de calibração: probabilidade prevista versus vitória observada">
+<line x1="52" x2="529" y1="248.0" y2="248.0" class="grid"/><text x="44" y="252.0" class="tick" text-anchor="end">0%</text><line x1="52" x2="529" y1="190.5" y2="190.5" class="grid"/><text x="44" y="194.5" class="tick" text-anchor="end">25%</text><line x1="52" x2="529" y1="133.0" y2="133.0" class="grid"/><text x="44" y="137.0" class="tick" text-anchor="end">50%</text><line x1="52" x2="529" y1="75.5" y2="75.5" class="grid"/><text x="44" y="79.5" class="tick" text-anchor="end">75%</text><line x1="52" x2="529" y1="18.0" y2="18.0" class="grid"/><text x="44" y="22.0" class="tick" text-anchor="end">100%</text><path d="M78.5,236.5 L502.5,52.5" class="refline" fill="none"/><path d="M78.5,234.1 L131.5,212.6 L184.5,190.6 L237.5,167.7 L290.5,143.5 L343.5,121.0 L396.5,100.2 L449.5,73.4 L502.5,55.4" fill="none" stroke="var(--s1)" stroke-width="2" stroke-linejoin="round"/><circle cx="78.5" cy="234.1" r="4" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><circle cx="131.5" cy="212.6" r="4" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><circle cx="184.5" cy="190.6" r="4" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><circle cx="237.5" cy="167.7" r="4" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><circle cx="290.5" cy="143.5" r="4" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><circle cx="343.5" cy="121.0" r="4" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><circle cx="396.5" cy="100.2" r="4" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><circle cx="449.5" cy="73.4" r="4" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><circle cx="502.5" cy="55.4" r="4" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><path d="M78.5,248.0 L131.5,215.1 L184.5,177.2 L237.5,184.8 L290.5,131.2 L343.5,115.3 L396.5,106.8 L449.5,85.6 L502.5,83.7" fill="none" stroke="var(--s2)" stroke-width="2" stroke-linejoin="round"/><circle cx="78.5" cy="248.0" r="4" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/><circle cx="131.5" cy="215.1" r="4" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/><circle cx="184.5" cy="177.2" r="4" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/><circle cx="237.5" cy="184.8" r="4" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/><circle cx="290.5" cy="131.2" r="4" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/><circle cx="343.5" cy="115.3" r="4" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/><circle cx="396.5" cy="106.8" r="4" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/><circle cx="449.5" cy="85.6" r="4" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/><circle cx="502.5" cy="83.7" r="4" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/><text x="78.5" y="270" class="tick" text-anchor="middle">0-10</text><text x="131.5" y="270" class="tick" text-anchor="middle">10-20</text><text x="184.5" y="270" class="tick" text-anchor="middle">20-30</text><text x="237.5" y="270" class="tick" text-anchor="middle">30-40</text><text x="290.5" y="270" class="tick" text-anchor="middle">40-50</text><text x="343.5" y="270" class="tick" text-anchor="middle">50-60</text><text x="396.5" y="270" class="tick" text-anchor="middle">60-70</text><text x="449.5" y="270" class="tick" text-anchor="middle">70-80</text><text x="502.5" y="270" class="tick" text-anchor="middle">80-90</text><text x="290.5" y="290" class="tick" text-anchor="middle">Faixa de probabilidade prevista (%)</text><line x1="52" x2="529" y1="248.0" y2="248.0" class="axis"/>
+<line class="xh-line" x1="0" x2="0" y1="18" y2="248.0"/>
+<g class="xh-dots"><circle class="xh-dot" r="4.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/>
+<circle class="xh-dot" r="4.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/>
+<circle class="xh-dot" r="0" fill="none"/></g>
+</svg>
+<script type="application/json" data-xh>{"xs": [78.5, 131.5, 184.5, 237.5, 290.5, 343.5, 396.5, 449.5, 502.5], "labels": ["0-10%", "10-20%", "20-30%", "30-40%", "40-50%", "50-60%", "60-70%", "70-80%", "80-90%"], "series": [{"name": "Probabilidade média prevista", "color": "var(--s1)", "values": ["6,0%", "15,4%", "25,0%", "34,9%", "45,4%", "55,2%", "64,3%", "75,9%", "83,8%"], "ys": [234.1, 212.6, 190.6, 167.7, 143.5, 121.0, 100.2, 73.4, 55.4]}, {"name": "Vitória observada", "color": "var(--s2)", "values": ["0,0%", "14,3%", "30,8%", "27,5%", "50,8%", "57,7%", "61,4%", "70,6%", "71,4%"], "ys": [248.0, 215.1, 177.2, 184.8, 131.2, 115.3, 106.8, 85.6, 83.7]}, {"name": "Partidas na faixa", "color": "var(--muted)", "values": ["3", "14", "39", "40", "65", "52", "57", "17", "7"], "ys": [248.0, 248.0, 248.0, 248.0, 248.0, 248.0, 248.0, 248.0, 248.0]}]}</script>
+</div><details class="table-view"><summary>Ver dados em tabela</summary><div class="table-scroll"><table><thead><tr><th scope="col">Faixa prevista</th><th scope="col">Partidas</th><th scope="col">Probabilidade média</th><th scope="col">Vitória observada</th></tr></thead><tbody>
+<tr><td>0-10%</td><td>3</td><td>6,0%</td><td>0,0%</td></tr>
+<tr><td>10-20%</td><td>14</td><td>15,4%</td><td>14,3%</td></tr>
+<tr><td>20-30%</td><td>39</td><td>25,0%</td><td>30,8%</td></tr>
+<tr><td>30-40%</td><td>40</td><td>34,9%</td><td>27,5%</td></tr>
+<tr><td>40-50%</td><td>65</td><td>45,4%</td><td>50,8%</td></tr>
+<tr><td>50-60%</td><td>52</td><td>55,2%</td><td>57,7%</td></tr>
+<tr><td>60-70%</td><td>57</td><td>64,3%</td><td>61,4%</td></tr>
+<tr><td>70-80%</td><td>17</td><td>75,9%</td><td>70,6%</td></tr>
+<tr><td>80-90%</td><td>7</td><td>83,8%</td><td>71,4%</td></tr>
+</tbody></table></div></details></figure>
+    <figure class="card span6"><figcaption><h3>Erros de alta confiança</h3><p class="note">Previsões com confiança de pelo menos 80% que não coincidiram com o resultado.</p></figcaption><div class="table-scroll"><table class="plain-table"><thead><tr><th scope="col">Data</th><th scope="col">Equipe analisada</th><th scope="col">Adversário</th><th scope="col">Previsão</th><th scope="col" class="num">Confiança</th></tr></thead><tbody>
+<tr><td>2026-01-31</td><td>FURIA</td><td>FUT</td><td>Vitória</td><td class="num">86,2%</td></tr>
+<tr><td>2026-02-28</td><td>BetBoom</td><td>Inner Circle</td><td>Vitória</td><td class="num">82,4%</td></tr>
+<tr><td>2026-03-07</td><td>3DMAX</td><td>FURIA</td><td>Derrota</td><td class="num">81,4%</td></tr>
+<tr><td>2026-03-06</td><td>B8</td><td>FURIA</td><td>Derrota</td><td class="num">81,2%</td></tr>
+</tbody></table></div></figure>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <span>Dados derivados de páginas públicas da HLTV.org, preparados em contexto acadêmico (TCC).
+    Este painel não tem vínculo com a HLTV.org e não deve ser interpretado como sistema de apostas
+    ou garantia de resultado.</span>
+    <span>Código sob licença MIT · dados sujeitos às condições de atribuição descritas no repositório.</span>
+    <span>Painéis estáticos (PNG): <a href="01_visao_geral.png">01_visao_geral.png</a> · <a href="02_equipes.png">02_equipes.png</a> · <a href="03_contexto_tempo.png">03_contexto_tempo.png</a> · <a href="04_modelo_elo.png">04_modelo_elo.png</a> · <a href="05_desempenho_modelo.png">05_desempenho_modelo.png</a></span>
+    <span>Gabriel Herdy Rocha · Engenharia de Computação, UFSCar ·
+    <a href="https://github.com/ceegu1N/cs2-analytics">GitHub</a> ·
+    <a href="https://www.linkedin.com/in/gabriel-herdy/">LinkedIn</a></span>
+  </div>
+</footer>
+
+<div id="tooltip" role="status" aria-live="polite"></div>
+<script>
+(function(){
+  var doc=document, root=doc.documentElement;
+  var toggle=doc.getElementById('theme-toggle');
+  function paintToggle(){toggle.textContent=root.dataset.theme==='light'?'\u263E Escuro':'\u2600 Claro';}
+  toggle.addEventListener('click',function(){
+    root.dataset.theme=root.dataset.theme==='light'?'dark':'light';
+    try{localStorage.setItem('cs2-theme',root.dataset.theme);}catch(e){}
+    paintToggle();
+  });
+  paintToggle();
+
+  var tip=doc.getElementById('tooltip');
+  function tipRow(value,label,color){
+    var row=doc.createElement('div');row.className='tt-row';
+    if(color){var k=doc.createElement('span');k.className='tt-key';k.style.background=color;row.appendChild(k);}
+    var v=doc.createElement('span');v.className='tt-val';v.textContent=value;row.appendChild(v);
+    var l=doc.createElement('span');l.textContent=label;row.appendChild(l);
+    return row;
+  }
+  function fillTip(title,rows){
+    tip.textContent='';
+    var t=doc.createElement('div');t.className='tt-title';t.textContent=title;tip.appendChild(t);
+    rows.forEach(function(r){tip.appendChild(tipRow(r[0],r[1],r[2]));});
+  }
+  function placeTip(x,y){
+    var pad=14,w=tip.offsetWidth,h=tip.offsetHeight;
+    var left=x+pad, top=y+pad;
+    if(left+w>innerWidth-8)left=x-w-pad;
+    if(top+h>innerHeight-8)top=y-h-pad;
+    tip.style.left=left+'px';tip.style.top=top+'px';
+  }
+  function showTip(){tip.style.opacity='1';}
+  function hideTip(){tip.style.opacity='0';}
+
+  function markTip(el,x,y){
+    var rows=(el.getAttribute('data-tip-rows')||'').split(';;').map(function(pair){
+      var i=pair.indexOf('::');return [pair.slice(0,i),pair.slice(i+2),null];
+    });
+    var key=el.getAttribute('data-tip-key');
+    if(key&&rows.length)rows[0][2]=key;
+    fillTip(el.getAttribute('data-tip-title')||'',rows);
+    placeTip(x,y);showTip();
+  }
+  doc.addEventListener('pointermove',function(e){
+    var el=e.target.closest&&e.target.closest('[data-tip-title]');
+    if(el){markTip(el,e.clientX,e.clientY);}
+  });
+  doc.addEventListener('pointerover',function(e){
+    if(!e.target.closest)return;
+    if(e.target.closest('[data-xh-chart],[data-nearest-chart],#tooltip'))return;
+    if(!e.target.closest('[data-tip-title]'))hideTip();
+  });
+  doc.addEventListener('focusin',function(e){
+    var el=e.target.closest&&e.target.closest('[data-tip-title]');
+    if(el){var r=el.getBoundingClientRect();markTip(el,r.left+r.width/2,r.top);}
+  });
+  doc.addEventListener('focusout',hideTip);
+
+  function svgPoint(svg,e){
+    var pt=new DOMPoint(e.clientX,e.clientY);
+    return pt.matrixTransform(svg.getScreenCTM().inverse());
+  }
+  doc.querySelectorAll('[data-xh-chart]').forEach(function(wrap){
+    var svg=wrap.querySelector('svg');
+    var data=JSON.parse(wrap.querySelector('script[data-xh]').textContent);
+    var line=svg.querySelector('.xh-line');
+    var dots=svg.querySelectorAll('.xh-dot');
+    svg.addEventListener('pointermove',function(e){
+      var p=svgPoint(svg,e), best=0, dist=Infinity;
+      data.xs.forEach(function(x,i){var d=Math.abs(x-p.x);if(d<dist){dist=d;best=i;}});
+      line.setAttribute('x1',data.xs[best]);line.setAttribute('x2',data.xs[best]);
+      line.style.opacity='1';
+      data.series.forEach(function(s,si){
+        if(dots[si]&&s.ys){dots[si].setAttribute('cx',data.xs[best]);dots[si].setAttribute('cy',s.ys[best]);
+          dots[si].style.opacity=dots[si].getAttribute('r')==='0'?'0':'1';}
+      });
+      fillTip(data.labels[best],data.series.map(function(s){
+        var c=s.color&&s.color.indexOf('var(')===0?getComputedStyle(root).getPropertyValue(s.color.slice(4,-1)).trim():s.color;
+        return [s.values[best],s.name,c];
+      }));
+      placeTip(e.clientX,e.clientY);showTip();
+    });
+    svg.addEventListener('pointerleave',function(){
+      line.style.opacity='0';dots.forEach(function(d){d.style.opacity='0';});hideTip();
+    });
+  });
+  doc.querySelectorAll('[data-nearest-chart]').forEach(function(wrap){
+    var svg=wrap.querySelector('svg');
+    var data=JSON.parse(wrap.querySelector('script[data-nearest]').textContent);
+    var halo=svg.querySelector('.nearest-halo');
+    svg.addEventListener('pointermove',function(e){
+      var p=svgPoint(svg,e), best=null, dist=Infinity;
+      data.points.forEach(function(pt){
+        var d=(pt.x-p.x)*(pt.x-p.x)+(pt.y-p.y)*(pt.y-p.y);
+        if(d<dist){dist=d;best=pt;}
+      });
+      if(best&&dist<data.radius*data.radius){
+        halo.setAttribute('cx',best.x);halo.setAttribute('cy',best.y);halo.style.opacity='1';
+        fillTip(best.title,best.rows.map(function(r){return [r[0],r[1],null];}));
+        placeTip(e.clientX,e.clientY);showTip();
+      }else{halo.style.opacity='0';hideTip();}
+    });
+    svg.addEventListener('pointerleave',function(){halo.style.opacity='0';hideTip();});
+  });
+
+  var links=[].slice.call(doc.querySelectorAll('nav.sections a'));
+  var map={};
+  links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  var spy=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(en.isIntersecting){
+        links.forEach(function(a){a.classList.remove('active');});
+        var a=map[en.target.id];if(a)a.classList.add('active');
+      }
+    });
+  },{rootMargin:'-30% 0px -60% 0px'});
+  doc.querySelectorAll('section.block').forEach(function(s){spy.observe(s);});
+})();
+</script>
+</body>
+</html>

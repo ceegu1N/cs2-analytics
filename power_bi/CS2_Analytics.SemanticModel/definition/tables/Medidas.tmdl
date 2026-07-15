@@ -1,0 +1,145 @@
+table Medidas
+	lineageTag: b10433b5-c498-4711-a5af-a7320187970a
+
+	/// Quantidade de partidas unicas na fonte operacional.
+	measure 'Partidas unicas' = COUNTROWS(Partidas)
+		formatString: #,##0
+		displayFolder: Visao geral
+		lineageTag: 2ad8ecbf-e848-4c91-8f99-2285bc041f5e
+
+	measure 'Equipes representadas' = DISTINCTCOUNT(PartidasEquipe[Equipe ID])
+		formatString: #,##0
+		displayFolder: Visao geral
+		lineageTag: f85b9020-7704-4a91-b045-92568025dcec
+
+	measure 'Partidas LAN' = CALCULATE([Partidas unicas], Partidas[Ambiente] = "LAN")
+		formatString: #,##0
+		displayFolder: Visao geral
+		lineageTag: 092217eb-7f21-4625-a0a1-0840e3083736
+
+	measure 'Partidas online' = CALCULATE([Partidas unicas], Partidas[Ambiente] = "ONLINE")
+		formatString: #,##0
+		displayFolder: Visao geral
+		lineageTag: 3f58e7f0-4f8d-4d69-8c15-707ea8121b0e
+
+	measure 'Participacao LAN' = DIVIDE([Partidas LAN], [Partidas unicas])
+		formatString: 0.0%
+		displayFolder: Visao geral
+		lineageTag: bd9d80de-89fd-4206-994a-9b817092f51c
+
+	measure 'Primeira data' = MIN(Calendario[Data])
+		formatString: dd/MM/yyyy
+		displayFolder: Visao geral
+		lineageTag: 1bb6600e-94d4-4f06-93b8-19decf833f19
+
+	measure 'Ultima data' = MAX(Calendario[Data])
+		formatString: dd/MM/yyyy
+		displayFolder: Visao geral
+		lineageTag: d845c6d3-6647-4ecd-b3e9-6c0992b802b1
+
+	measure 'Partidas representadas' = COUNTROWS(PartidasEquipe)
+		formatString: #,##0
+		displayFolder: Equipes
+		lineageTag: 212ed55a-a07e-4881-a1dc-1e4291eb54b3
+
+	measure Vitorias = SUM(PartidasEquipe[Vitoria])
+		formatString: #,##0
+		displayFolder: Equipes
+		lineageTag: 36113132-995c-4924-9d72-fbe2e68f7c2a
+
+	measure Derrotas = [Partidas representadas] - [Vitorias]
+		formatString: #,##0
+		displayFolder: Equipes
+		lineageTag: 1cbf0548-6331-4281-b66c-ca48cec73f30
+
+	measure 'Taxa de vitoria' = DIVIDE([Vitorias], [Partidas representadas])
+		formatString: 0.0%
+		displayFolder: Equipes
+		lineageTag: 2fd56fe6-a831-48f5-9a61-4052b7e8ce66
+
+	/// Oculta equipes com amostra muito pequena nos graficos comparativos.
+	measure 'Taxa de vitoria (min 50)' = IF([Partidas representadas] >= 50, [Taxa de vitoria])
+		formatString: 0.0%
+		displayFolder: Equipes
+		lineageTag: 13ff78c8-2586-4d79-9d6b-43081b848317
+
+	measure 'Partidas de modelagem' = COUNTROWS(Modelagem)
+		formatString: #,##0
+		displayFolder: Modelagem
+		lineageTag: a6bab2c4-0e59-44b4-9084-dd4371ecfeb8
+
+	measure 'Diferenca media absoluta de ELO' = AVERAGE(Modelagem[Diferenca absoluta ELO])
+		formatString: #,##0.0
+		displayFolder: Modelagem
+		lineageTag: dcb5ca3c-bc81-44e9-9554-e58b54c9c1f1
+
+	measure 'Vitoria do maior ELO' = AVERAGE(Modelagem[Maior ELO venceu])
+		formatString: 0.0%
+		displayFolder: Modelagem
+		lineageTag: 6b342f06-e357-4881-97a6-b87541c677a1
+
+	measure 'Participacao LAN na modelagem' = AVERAGE(Modelagem[Contexto LAN])
+		formatString: 0.0%
+		displayFolder: Modelagem
+		lineageTag: 8d468a6d-5b82-48ec-a6ce-5f1c4566b34a
+
+	measure 'Partidas no holdout' = COUNTROWS(Previsoes)
+		formatString: #,##0
+		displayFolder: Desempenho do modelo
+		lineageTag: 2806f80d-a3c3-4ad8-b2bd-550f41a0bf59
+
+	measure 'Acuracia do modelo' = AVERAGE(Previsoes[Acerto])
+		formatString: 0.00%
+		displayFolder: Desempenho do modelo
+		lineageTag: 01baf39b-5889-44ee-ae47-c425a4663980
+
+	/// ROC-AUC global congelado das 294 partidas do holdout.
+	measure 'ROC-AUC do holdout' = 0.6828385899814471
+		formatString: 0.0000
+		displayFolder: Desempenho do modelo
+		lineageTag: 6491ba06-a410-4548-b64e-a66a2beead21
+
+	measure 'Brier medio' = AVERAGE(Previsoes[Brier individual])
+		formatString: 0.0000
+		displayFolder: Desempenho do modelo
+		lineageTag: a4b32cbc-8984-45c6-a7c4-28770cbefc0e
+
+	measure 'Log-loss medio' = AVERAGE(Previsoes[Log-loss individual])
+		formatString: 0.0000
+		displayFolder: Desempenho do modelo
+		lineageTag: 97117889-0ff5-49f6-a570-a891e1a52817
+
+	measure 'Erros de alta confianca' = SUM(Previsoes[Erro de alta confianca])
+		formatString: #,##0
+		displayFolder: Desempenho do modelo
+		lineageTag: 64e7bd48-9db4-4644-bb57-5b26f102c6d5
+
+	measure 'Previsoes de alta confianca' = SUM(Previsoes[Alta confianca])
+		formatString: #,##0
+		displayFolder: Desempenho do modelo
+		lineageTag: 58acccb0-4c25-4f94-ad1f-9da744872f42
+
+	measure 'Probabilidade media prevista' = AVERAGE(Previsoes[Probabilidade])
+		formatString: 0.0%
+		displayFolder: Desempenho do modelo
+		lineageTag: 1c21ef2a-9ee7-484a-bab2-6799d2c35069
+
+	measure 'Taxa observada de vitoria' = AVERAGE(Previsoes[Resultado numerico])
+		formatString: 0.0%
+		displayFolder: Desempenho do modelo
+		lineageTag: b94f67a7-0333-45e4-a79a-a5aaa8f8bfc9
+
+	measure 'Quantidade de previsoes' = COUNTROWS(Previsoes)
+		formatString: #,##0
+		displayFolder: Desempenho do modelo
+		lineageTag: 84b05a39-149c-475c-bb02-18ea0309a76b
+
+	column Placeholder
+		dataType: string
+		isHidden
+		lineageTag: 3eeb1dd9-3d83-4de8-b4ca-19e7baa84d95
+		sourceColumn: [Placeholder]
+
+	partition Medidas = calculated
+		mode: import
+		source = ROW("Placeholder", BLANK())

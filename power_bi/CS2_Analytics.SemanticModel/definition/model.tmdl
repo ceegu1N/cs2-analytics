@@ -1,0 +1,22 @@
+model Model
+	culture: pt-BR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: pt-BR
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["Calendario","Equipes","Partidas","PartidasEquipe","Modelagem","Previsoes","DataRoot"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table Calendario
+ref table Equipes
+ref table Partidas
+ref table PartidasEquipe
+ref table Modelagem
+ref table Previsoes
+ref table Medidas

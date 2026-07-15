@@ -1,0 +1,418 @@
+table Modelagem
+	lineageTag: 8cac4551-03f9-4c16-9eea-a25a3225f3de
+
+	column 'Partida ID'
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: ea2c92c6-65fa-4818-9cd0-3c1f7b5c9b12
+		summarizeBy: none
+		sourceColumn: model_match_id
+
+	column 'Data ID'
+		dataType: int64
+		isHidden
+		lineageTag: 366f16b3-d5d5-4877-a68a-0a167c987be0
+		summarizeBy: none
+		sourceColumn: match_date_key
+
+	column Temporada
+		dataType: string
+		lineageTag: 6b0b91f8-49b9-40b7-a26d-c38b777a54d9
+		summarizeBy: none
+		sourceColumn: season_label
+
+	column Recorte
+		dataType: string
+		lineageTag: 93a6ddc1-4531-4b3f-a6ee-644693ef080f
+		summarizeBy: none
+		sourceColumn: season_usage
+
+	column 'Equipe ID'
+		dataType: int64
+		isHidden
+		lineageTag: 2c819aaa-8bf8-46c3-952c-c96ad6212997
+		summarizeBy: none
+		sourceColumn: team_id
+
+	column 'Adversario ID'
+		dataType: int64
+		isHidden
+		lineageTag: 72b962ad-0aca-4c30-ac6e-ca6d26a0bef6
+		summarizeBy: none
+		sourceColumn: opponent_team_id
+
+	column Resultado
+		dataType: int64
+		lineageTag: 04e5dd49-4696-42b6-a5a6-7899f5a789f7
+		summarizeBy: sum
+		sourceColumn: win_target
+
+	column 'Contexto LAN'
+		dataType: double
+		lineageTag: b6eedec4-e3b4-4e34-a002-7df2f4b403f3
+		summarizeBy: sum
+		sourceColumn: context_is_lan
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Diferenca ELO'
+		dataType: double
+		formatString: #,##0.0
+		lineageTag: dd195532-1287-49e0-bada-886eb099874b
+		summarizeBy: sum
+		sourceColumn: diff_elo_pre_match
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ambiente = IF(Modelagem[Contexto LAN] = 1, "LAN", "ONLINE")
+		dataType: string
+		lineageTag: d211350e-9c27-4b86-9f1e-cb1b55a4c091
+		summarizeBy: none
+
+	column 'Diferenca absoluta ELO' = ABS(Modelagem[Diferenca ELO])
+		dataType: decimal
+		formatString: #,##0.0
+		lineageTag: 241d64ad-17ee-4481-8e39-34ee36855600
+		summarizeBy: none
+
+	column 'Ordem faixa ELO' =
+			SWITCH(
+				TRUE(),
+				Modelagem[Diferenca absoluta ELO] < 50, 1,
+				Modelagem[Diferenca absoluta ELO] < 100, 2,
+				Modelagem[Diferenca absoluta ELO] < 200, 3,
+				4
+			)
+		dataType: int64
+		isHidden
+		lineageTag: ee37a404-77ae-4a87-abf8-36b05177a0c8
+		summarizeBy: none
+
+	column 'Faixa ELO' =
+			SWITCH(
+				Modelagem[Ordem faixa ELO],
+				1, "0-49",
+				2, "50-99",
+				3, "100-199",
+				"200+"
+			)
+		dataType: string
+		lineageTag: 04ba987d-127b-4c5a-a396-74b46e3872ea
+		summarizeBy: none
+		sortByColumn: 'Ordem faixa ELO'
+
+	column 'Maior ELO venceu' =
+			IF(
+				Modelagem[Diferenca ELO] = 0,
+				BLANK(),
+				IF(
+					(Modelagem[Diferenca ELO] > 0 && Modelagem[Resultado] = 1)
+						|| (Modelagem[Diferenca ELO] < 0 && Modelagem[Resultado] = 0),
+					1,
+					0
+				)
+			)
+		dataType: int64
+		lineageTag: c25f7e3e-2cf3-4bbb-931f-65578b78aee6
+		summarizeBy: average
+
+	column diff_recent_win_rate
+		dataType: string
+		lineageTag: 6481e796-bb69-4ea2-bae0-6749b63c8fce
+		summarizeBy: none
+		sourceColumn: diff_recent_win_rate
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_maps_played_mean_5
+		dataType: string
+		lineageTag: a47e7ffc-d117-441b-aed7-84987a0c938f
+		summarizeBy: none
+		sourceColumn: diff_maps_played_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_rounds_played_mean_5
+		dataType: string
+		lineageTag: bec85d26-de60-4758-82f2-6daac4f91bcd
+		summarizeBy: none
+		sourceColumn: diff_rounds_played_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_total_kills_mean_5
+		dataType: string
+		lineageTag: 470b0043-da71-47ff-8d20-f3fb040d425b
+		summarizeBy: none
+		sourceColumn: diff_total_kills_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_rating_mean_5
+		dataType: string
+		lineageTag: 46d44848-cd32-4f85-bf46-7261bc621f3d
+		summarizeBy: none
+		sourceColumn: diff_rating_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_adr_mean_5
+		dataType: string
+		lineageTag: b04a28ac-dbaf-497f-a640-cc80acd40ee4
+		summarizeBy: none
+		sourceColumn: diff_adr_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_impact_mean_5
+		dataType: string
+		lineageTag: 0074db8b-7353-4344-b189-bc5c7dd4ceb1
+		summarizeBy: none
+		sourceColumn: diff_impact_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_kast_mean_5
+		dataType: string
+		lineageTag: fad12e7e-a100-475b-b6df-465b8d616056
+		summarizeBy: none
+		sourceColumn: diff_kast_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_kd_mean_5
+		dataType: string
+		lineageTag: cab66bba-d72c-40cd-be37-8b8e27e9334e
+		summarizeBy: none
+		sourceColumn: diff_kd_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_kills_per_round_mean_5
+		dataType: string
+		lineageTag: 7305a5c2-4e51-471f-9dbc-b998886c7446
+		summarizeBy: none
+		sourceColumn: diff_kills_per_round_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_deaths_per_round_mean_5
+		dataType: string
+		lineageTag: a1d11537-b60d-445e-bac9-0a13042a54e0
+		summarizeBy: none
+		sourceColumn: diff_deaths_per_round_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_assists_per_round_mean_5
+		dataType: string
+		lineageTag: 56d11487-3d4e-4759-ad70-8da22ab3a535
+		summarizeBy: none
+		sourceColumn: diff_assists_per_round_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_headshot_pct_mean_5
+		dataType: string
+		lineageTag: e22db328-6b23-4693-9fca-97a45db0f311
+		summarizeBy: none
+		sourceColumn: diff_headshot_pct_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_saved_by_teammate_per_round_mean_5
+		dataType: string
+		lineageTag: aea14693-bc13-418c-9dd6-5e4a2370f599
+		summarizeBy: none
+		sourceColumn: diff_saved_by_teammate_per_round_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_utility_damage_per_round_mean_5
+		dataType: string
+		lineageTag: 3aa99ba2-c5ed-460c-a924-af29412d4262
+		summarizeBy: none
+		sourceColumn: diff_utility_damage_per_round_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_flash_assists_per_round_mean_5
+		dataType: string
+		lineageTag: a1cdccc1-0d30-4843-b369-9f2ca716b803
+		summarizeBy: none
+		sourceColumn: diff_flash_assists_per_round_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_utility_kills_per_100_rounds_mean_5
+		dataType: string
+		lineageTag: 0bcbb0fb-8435-4f4a-92ff-e966a3f494ef
+		summarizeBy: none
+		sourceColumn: diff_utility_kills_per_100_rounds_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_time_opponent_flashed_per_round_mean_5
+		dataType: string
+		lineageTag: f2fb8895-7b9b-47ae-8322-1b77b3c65547
+		summarizeBy: none
+		sourceColumn: diff_time_opponent_flashed_per_round_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_opening_kills_per_round_mean_5
+		dataType: string
+		lineageTag: f23559d8-1124-4df8-979c-67a967990f84
+		summarizeBy: none
+		sourceColumn: diff_opening_kills_per_round_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_opening_deaths_per_round_mean_5
+		dataType: string
+		lineageTag: b8e2b324-51b4-4921-8f41-b8d905875c93
+		summarizeBy: none
+		sourceColumn: diff_opening_deaths_per_round_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_opening_success_mean_5
+		dataType: string
+		lineageTag: 3babf489-dbf6-479c-a9ab-aead973cf8a3
+		summarizeBy: none
+		sourceColumn: diff_opening_success_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_win_after_opening_kill_pct_mean_5
+		dataType: string
+		lineageTag: d2ef97aa-7f85-4595-837d-1f5cf1396261
+		summarizeBy: none
+		sourceColumn: diff_win_after_opening_kill_pct_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_trade_kills_per_round_mean_5
+		dataType: string
+		lineageTag: 91d3bb75-8bcf-4e99-8eb3-01c3f994b63b
+		summarizeBy: none
+		sourceColumn: diff_trade_kills_per_round_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_saved_teammate_per_round_mean_5
+		dataType: string
+		lineageTag: de1769dd-fb20-4d38-9084-1d0453601b12
+		summarizeBy: none
+		sourceColumn: diff_saved_teammate_per_round_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_last_alive_pct_mean_5
+		dataType: string
+		lineageTag: 99d16a0c-788f-4104-9807-6a2d02610298
+		summarizeBy: none
+		sourceColumn: diff_last_alive_pct_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_one_on_one_win_pct_mean_5
+		dataType: string
+		lineageTag: bc598120-bcff-4765-8ca0-1c379ae54a85
+		summarizeBy: none
+		sourceColumn: diff_one_on_one_win_pct_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_time_alive_per_round_mean_5
+		dataType: string
+		lineageTag: 64a7514a-4f57-4106-9fa7-338a0d0f2f62
+		summarizeBy: none
+		sourceColumn: diff_time_alive_per_round_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_rounds_with_a_kill_mean_5
+		dataType: string
+		lineageTag: ab79f384-a382-4e7f-89af-be96fc5f930d
+		summarizeBy: none
+		sourceColumn: diff_rounds_with_a_kill_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_kills_per_round_win_mean_5
+		dataType: string
+		lineageTag: f2a92e0f-edef-4b4c-9c27-c1fd976f0062
+		summarizeBy: none
+		sourceColumn: diff_kills_per_round_win_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_damage_per_round_win_mean_5
+		dataType: string
+		lineageTag: ddf7cac3-0994-4e0a-a0f4-fe62beb455f5
+		summarizeBy: none
+		sourceColumn: diff_damage_per_round_win_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_pistol_round_rating_mean_5
+		dataType: string
+		lineageTag: f25f991d-0d53-4225-9318-230b0091bfa1
+		summarizeBy: none
+		sourceColumn: diff_pistol_round_rating_mean_5
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_players_count
+		dataType: string
+		lineageTag: 4f0755f1-de16-4b35-b21e-9b12d0b57571
+		summarizeBy: none
+		sourceColumn: diff_players_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column diff_missing_players
+		dataType: string
+		lineageTag: 619241fe-61ed-4265-95a3-27d04b1f7cfe
+		summarizeBy: none
+		sourceColumn: diff_missing_players
+
+		annotation SummarizationSetBy = Automatic
+
+	column context_is_bo1
+		dataType: string
+		lineageTag: be9a5d46-8c80-42e9-a8b9-526f86ecd3c5
+		summarizeBy: none
+		sourceColumn: context_is_bo1
+
+		annotation SummarizationSetBy = Automatic
+
+	column context_is_bo3
+		dataType: string
+		lineageTag: 4518c5f8-c030-48e1-99b7-bb189590c454
+		summarizeBy: none
+		sourceColumn: context_is_bo3
+
+		annotation SummarizationSetBy = Automatic
+
+	column context_is_bo5
+		dataType: string
+		lineageTag: f12ccab7-1a66-42ae-8acf-964e29e44ee0
+		summarizeBy: none
+		sourceColumn: context_is_bo5
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Modelagem = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents(DataRoot & "\fact_model_match.csv"), [Delimiter=";", Columns=45, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Types = Table.TransformColumnTypes(Headers, {{"model_match_id", Int64.Type}, {"match_date_key", Int64.Type}, {"season_label", type text}, {"season_usage", type text}, {"team_id", Int64.Type}, {"opponent_team_id", Int64.Type}, {"win_target", Int64.Type}, {"context_is_lan", type number}, {"diff_elo_pre_match", type number}}, "pt-BR")
+				in
+					Types

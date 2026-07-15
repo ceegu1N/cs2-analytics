@@ -1,0 +1,2 @@
+expression DataRoot = "C:\CAMINHO\cs2-analytics\output\power_bi_tables" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: e280e3f4-9a20-4782-b256-2edb53d31f1c

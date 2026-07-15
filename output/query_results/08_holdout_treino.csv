@@ -1,0 +1,3 @@
+﻿recorte;partidas;diferenca_elo_media;partidas_lan_pct;series_bo1;series_bo3;series_bo5;taxa_vitoria_equipe_referencia
+train;2546;86,93;62,57;464;2036;46;0,48
+holdout;294;104,96;58,84;10;278;6;0,4762

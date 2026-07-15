@@ -1,0 +1,113 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 1209.9268147802024,
+            "y": 466.32093512759263
+          },
+          "nodeIndex": "Medidas",
+          "nodeLineageTag": "b10433b5-c498-4711-a5af-a7320187970a",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 756.682182003525,
+            "y": 303.40396128103646
+          },
+          "nodeIndex": "Calendario",
+          "nodeLineageTag": "492dc9e1-d468-4945-9781-b949f7093264",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": 653.60175157593312
+          },
+          "nodeIndex": "Equipes",
+          "nodeLineageTag": "b2d5fb2f-ed36-4697-9748-d62c26abcf60",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 285.12015256330756,
+            "y": 882.64187025518527
+          },
+          "nodeIndex": "Modelagem",
+          "nodeLineageTag": "8cac4551-03f9-4c16-9eea-a25a3225f3de",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 975.92681478020245,
+            "y": -20.29491646090878
+          },
+          "nodeIndex": "Partidas",
+          "nodeLineageTag": "2adb4f58-6086-4806-9a2c-8879d96285a0",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 590.20151919831949,
+            "y": -50
+          },
+          "nodeIndex": "PartidasEquipe",
+          "nodeLineageTag": "626f0381-ce32-4ed9-888e-3a7f5a75cfad",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 330.26130208362656,
+            "y": 301.61495391118331
+          },
+          "nodeIndex": "Previsoes",
+          "nodeLineageTag": "769d5da4-80ce-4ece-bdd1-1d2dafe633cf",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "Todas as tabelas",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "Todas as tabelas",
+  "defaultDiagram": "Todas as tabelas"
+}

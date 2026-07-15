@@ -1,0 +1,60 @@
+table Calendario
+	lineageTag: 492dc9e1-d468-4945-9781-b949f7093264
+	dataCategory: Time
+
+	column 'Data ID'
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: 130014d6-c8f3-47c6-b07b-b1f9414bc41a
+		summarizeBy: none
+		sourceColumn: date_key
+
+	column Data
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 9614abff-29e1-4862-8f32-9b9016336689
+		summarizeBy: none
+		sourceColumn: date_iso
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Ano
+		dataType: int64
+		lineageTag: 81a5fd4c-d068-42a1-ab19-5f8135101876
+		summarizeBy: none
+		sourceColumn: year
+
+	column Mes
+		dataType: int64
+		lineageTag: 6538f8e5-162c-44ef-bdd3-5db359355df2
+		summarizeBy: none
+		sourceColumn: month
+
+	column Trimestre
+		dataType: int64
+		lineageTag: b5167aa5-10f6-4ab3-8404-0290644439a6
+		summarizeBy: none
+		sourceColumn: quarter
+
+	column Semestre
+		dataType: int64
+		lineageTag: fdca3494-72d5-417d-aa76-850ca0a098dd
+		summarizeBy: none
+		sourceColumn: semester
+
+	column Ano-Mes
+		dataType: string
+		lineageTag: 42e8bba8-1c13-44cc-b22c-a837b655764f
+		summarizeBy: none
+		sourceColumn: year_month
+
+	partition Calendario = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents(DataRoot & "\dim_date.csv"), [Delimiter=";", Columns=7, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Types = Table.TransformColumnTypes(Headers, {{"date_key", Int64.Type}, {"date_iso", type date}, {"year", Int64.Type}, {"month", Int64.Type}, {"quarter", Int64.Type}, {"semester", Int64.Type}, {"year_month", type text}}, "pt-BR")
+				in
+					Types

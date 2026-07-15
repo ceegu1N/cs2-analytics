@@ -1,0 +1,108 @@
+table PartidasEquipe
+	lineageTag: 626f0381-ce32-4ed9-888e-3a7f5a75cfad
+
+	column 'Perspectiva ID'
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: f0984843-6c0c-4018-87ef-08316f708b8f
+		summarizeBy: count
+		sourceColumn: perspective_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Partida ID'
+		dataType: int64
+		isHidden
+		lineageTag: f89e424a-c4e1-44c0-8556-bdf329f1c63f
+		summarizeBy: count
+		sourceColumn: match_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data ID'
+		dataType: int64
+		isHidden
+		lineageTag: 1394767b-3793-4d0c-bfed-03d0cda3f6b3
+		summarizeBy: none
+		sourceColumn: match_date_key
+
+	column Temporada
+		dataType: string
+		lineageTag: 09a299b5-6017-4065-b1c2-7defb223ecc5
+		summarizeBy: none
+		sourceColumn: season_label
+
+	column Recorte
+		dataType: string
+		lineageTag: 313e168a-bb29-4dce-8134-0f926b3aac89
+		summarizeBy: none
+		sourceColumn: season_usage
+
+	column 'Equipe ID'
+		dataType: int64
+		isHidden
+		lineageTag: 334fcf1e-7a22-4970-8d23-69b803bece29
+		summarizeBy: none
+		sourceColumn: team_id
+
+	column 'Adversario ID'
+		dataType: int64
+		isHidden
+		lineageTag: 354049cd-972f-47c5-8ed2-41b65fe323e1
+		summarizeBy: count
+		sourceColumn: opponent_team_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Vitoria
+		dataType: int64
+		lineageTag: b7b0d886-5532-4c64-947f-db870e540804
+		summarizeBy: sum
+		sourceColumn: win
+
+	column Formato
+		dataType: string
+		lineageTag: b0e81393-7f73-47d3-88d9-91de95b5c850
+		summarizeBy: none
+		sourceColumn: best_of
+
+	column Ambiente
+		dataType: string
+		lineageTag: 7d3a88e5-5392-4322-aa03-f44aaf4cb72b
+		summarizeBy: none
+		sourceColumn: lan_online
+
+	column team_score
+		dataType: string
+		lineageTag: c2fb767c-9883-466b-9af8-2119f363cab8
+		summarizeBy: none
+		sourceColumn: team_score
+
+		annotation SummarizationSetBy = Automatic
+
+	column opponent_score
+		dataType: string
+		lineageTag: b3fc9c24-b643-402e-b958-75c9409f1e0f
+		summarizeBy: none
+		sourceColumn: opponent_score
+
+		annotation SummarizationSetBy = Automatic
+
+	column match_url
+		dataType: string
+		lineageTag: 91067edc-aa62-40b6-bda3-de6f954591d1
+		summarizeBy: none
+		sourceColumn: match_url
+
+		annotation SummarizationSetBy = Automatic
+
+	partition PartidasEquipe = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents(DataRoot & "\fact_team_match.csv"), [Delimiter=";", Columns=13, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Types = Table.TransformColumnTypes(Headers, {{"perspective_id", Int64.Type}, {"match_id", Int64.Type}, {"match_date_key", Int64.Type}, {"season_label", type text}, {"season_usage", type text}, {"team_id", Int64.Type}, {"opponent_team_id", Int64.Type}, {"win", Int64.Type}, {"best_of", type text}, {"lan_online", type text}}, "pt-BR")
+				in
+					Types

@@ -1,0 +1,14 @@
+* text=auto
+
+*.py text eol=lf
+*.sql text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.tmdl text eol=lf
+*.csv text eol=lf
+
+*.joblib binary
+*.png binary
+
+# Dashboard gerado pelo pipeline; nao representa a linguagem-fonte do projeto.
+output/dashboard/index.html linguist-generated=true

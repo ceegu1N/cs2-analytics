@@ -1,0 +1,197 @@
+table Previsoes
+	lineageTag: 769d5da4-80ce-4ece-bdd1-1d2dafe633cf
+
+	column 'Partida ID'
+		dataType: int64
+		isHidden
+		isKey
+		lineageTag: f78b19f5-b3a7-4ee0-a205-116ec68da1b8
+		summarizeBy: none
+		sourceColumn: model_match_id
+
+	column 'Data ID'
+		dataType: int64
+		isHidden
+		lineageTag: 752f216b-b23d-4486-b350-5f6f0de18d84
+		summarizeBy: none
+		sourceColumn: match_date_key
+
+	column Data
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 253ca54c-0793-42d6-a98a-0b17b3e8698a
+		summarizeBy: none
+		sourceColumn: match_date_iso
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Temporada
+		dataType: string
+		lineageTag: 0156b3db-6873-4fb6-a5e4-c792af3829c9
+		summarizeBy: none
+		sourceColumn: season_label
+
+	column 'Equipe ID'
+		dataType: int64
+		isHidden
+		lineageTag: 1606a3a3-c20f-4aa7-bb4a-c6324cba0a47
+		summarizeBy: none
+		sourceColumn: team_id
+
+	column Equipe
+		dataType: string
+		lineageTag: d7bd369a-952c-4a77-a10c-1ef61128f888
+		summarizeBy: none
+		sourceColumn: team_name
+
+	column 'Adversario ID'
+		dataType: int64
+		isHidden
+		lineageTag: 84e77bb3-d732-4325-bcad-6d1005d2a38e
+		summarizeBy: none
+		sourceColumn: opponent_team_id
+
+	column Adversario
+		dataType: string
+		lineageTag: 45a76e32-9be0-4574-b0e0-9ea2c63f6ab9
+		summarizeBy: none
+		sourceColumn: opponent_name
+
+	column Ambiente
+		dataType: string
+		lineageTag: 107228d8-68cf-4abc-806c-42983e1b9920
+		summarizeBy: none
+		sourceColumn: environment
+
+	column 'Diferenca absoluta ELO'
+		dataType: double
+		formatString: #,##0.0
+		lineageTag: cdba9108-a37e-45cb-9917-eb446b598698
+		summarizeBy: sum
+		sourceColumn: abs_elo_difference
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Faixa ELO'
+		dataType: string
+		lineageTag: bfdf2936-8601-4c1c-890d-bba01c376309
+		summarizeBy: none
+		sourceColumn: elo_band
+		sortByColumn: 'Ordem faixa ELO'
+
+	column 'Ordem faixa ELO'
+		dataType: int64
+		isHidden
+		lineageTag: 750b45a1-b165-4d60-9966-4a4fdf053953
+		summarizeBy: none
+		sourceColumn: elo_band_sort
+
+	column 'Resultado real'
+		dataType: string
+		lineageTag: 42422aab-77f0-4c58-8b9b-ef68e98e3ae4
+		summarizeBy: none
+		sourceColumn: actual_result
+
+	column Probabilidade
+		dataType: double
+		formatString: 0.0%
+		lineageTag: bda07dff-5e8f-4097-b79a-4a7167f8c0a8
+		summarizeBy: sum
+		sourceColumn: probability
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Faixa de probabilidade'
+		dataType: string
+		lineageTag: 36d127c6-e5a3-444c-a6b5-075dece39312
+		summarizeBy: none
+		sourceColumn: probability_band
+		sortByColumn: 'Ordem faixa de probabilidade'
+
+	column 'Ordem faixa de probabilidade'
+		dataType: int64
+		isHidden
+		lineageTag: 6d376e93-b6d2-41f6-a778-cba8e7fc2208
+		summarizeBy: none
+		sourceColumn: probability_band_sort
+
+	column 'Classe prevista'
+		dataType: int64
+		isHidden
+		lineageTag: cf4bf363-61c8-4ed9-9a3b-dbcfc1c0fefd
+		summarizeBy: none
+		sourceColumn: predicted_class
+
+	column 'Resultado previsto'
+		dataType: string
+		lineageTag: 5657ae97-4959-4c93-8cc0-3ad5808b62b6
+		summarizeBy: none
+		sourceColumn: predicted_result
+
+	column Acerto
+		dataType: int64
+		lineageTag: 32f46072-5b63-46fb-9bb3-54ff92e131e5
+		summarizeBy: average
+		sourceColumn: correct
+
+	column Confianca
+		dataType: double
+		formatString: 0.0%
+		lineageTag: d1fcc398-13fb-41da-be48-8724e3294d37
+		summarizeBy: sum
+		sourceColumn: confidence
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Alta confianca'
+		dataType: int64
+		lineageTag: 2af13072-33bc-4dc2-ae36-5f1eaf9f0d20
+		summarizeBy: sum
+		sourceColumn: high_confidence
+
+	column 'Erro de alta confianca'
+		dataType: int64
+		lineageTag: d154c358-16d3-46b1-b837-a0aa44dbd43f
+		summarizeBy: sum
+		sourceColumn: high_confidence_error
+
+	column 'Celula da matriz'
+		dataType: string
+		lineageTag: e283ffe3-9727-4846-a50b-a080fe9aed20
+		summarizeBy: none
+		sourceColumn: confusion_cell
+
+	column 'Brier individual'
+		dataType: double
+		formatString: 0.0000
+		lineageTag: 354b0e96-8021-44bb-bf2a-7a487ff2198b
+		summarizeBy: sum
+		sourceColumn: brier_component
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Log-loss individual'
+		dataType: double
+		formatString: 0.0000
+		lineageTag: f48dab00-5f9f-4e6f-97fa-829084bfa2a0
+		summarizeBy: sum
+		sourceColumn: log_loss_component
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Resultado numerico'
+		dataType: int64
+		isHidden
+		lineageTag: fb0e3c87-0d51-4628-8e70-e1e175b64fe5
+		summarizeBy: average
+		sourceColumn: y_true
+
+	partition Previsoes = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents(DataRoot & "\fact_prediction_holdout.csv"), [Delimiter=";", Columns=26, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+					Types = Table.TransformColumnTypes(Headers, {{"model_match_id", Int64.Type}, {"match_date_key", Int64.Type}, {"match_date_iso", type date}, {"season_label", type text}, {"team_id", Int64.Type}, {"team_name", type text}, {"opponent_team_id", Int64.Type}, {"opponent_name", type text}, {"environment", type text}, {"abs_elo_difference", type number}, {"elo_band", type text}, {"elo_band_sort", Int64.Type}, {"y_true", Int64.Type}, {"actual_result", type text}, {"probability", type number}, {"probability_band", type text}, {"probability_band_sort", Int64.Type}, {"predicted_class", Int64.Type}, {"predicted_result", type text}, {"correct", Int64.Type}, {"confidence", type number}, {"high_confidence", Int64.Type}, {"high_confidence_error", Int64.Type}, {"confusion_cell", type text}, {"brier_component", type number}, {"log_loss_component", type number}}, "pt-BR")
+				in
+					Types
